@@ -1,12 +1,15 @@
-﻿<Window x:Class="AirplaneSimulationTrajectory.MainWindow"
+﻿<Window x:Class="AirplaneSimulationTrajectory.View.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AirplaneSimulationTrajectory"
         xmlns:h="http://helix-toolkit.org/wpf"
-        mc:Ignorable="d"
-          Height="480" Width="640">
+        xmlns:viewModel="clr-namespace:AirplaneSimulationTrajectory.ViewModel"
+        mc:Ignorable="d" Height="480" Width="640">
+    <Window.DataContext>
+        <viewModel:MainViewModel />
+    </Window.DataContext>
     <TabControl TabStripPlacement="Bottom" BorderThickness="0 0 0 1" Padding="0" Margin="0 0 0 2">
         <TabItem Header="Clouds">
             <h:HelixViewport3D x:Name="view1"  Background="Black" RotationSensitivity="0.3" InfiniteSpin="True" ZoomExtentsWhenLoaded="True">
