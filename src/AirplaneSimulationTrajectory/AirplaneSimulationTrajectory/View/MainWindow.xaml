@@ -12,7 +12,7 @@
     </Window.DataContext>
     <TabControl TabStripPlacement="Bottom" BorderThickness="0 0 0 1" Padding="0" Margin="0 0 0 2">
         <TabItem Header="Clouds">
-            <h:HelixViewport3D x:Name="view1"  Background="Black" RotationSensitivity="0.3" InfiniteSpin="True" ZoomExtentsWhenLoaded="True">
+            <h:HelixViewport3D Name="MainViewport3D" Background="Black" RotationSensitivity="0.3" InfiniteSpin="True" ZoomExtentsWhenLoaded="True">
                 <h:DefaultLights/>
                 <h:SphereVisual3D Radius="1" Material="{h:ImageMaterial 'pack://application:,,,/Images/earth.jpg'}" ThetaDiv="180" PhiDiv="90" />
                 <h:SphereVisual3D Radius="1.01" Material="{Binding Clouds}" ThetaDiv="90" PhiDiv="45"/>
@@ -30,7 +30,7 @@
             </h:HelixViewport3D>
         </TabItem>
         <TabItem Header="Sunlight">
-            <h:HelixViewport3D x:Name="view3"  Background="Black" RotationSensitivity="0.3" InfiniteSpin="True" ZoomExtentsWhenLoaded="True">
+            <h:HelixViewport3D Name="CameraView3D" Background="Black" RotationSensitivity="0.3" InfiniteSpin="True" ZoomExtentsWhenLoaded="True">
                 <ModelVisual3D>
                     <ModelVisual3D.Content>
                         <DirectionalLight Color="White" Direction="{Binding SunlightDirection}"/>
