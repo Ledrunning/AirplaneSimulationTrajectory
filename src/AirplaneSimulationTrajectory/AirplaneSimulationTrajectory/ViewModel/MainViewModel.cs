@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using AirplaneSimulationTrajectory.Services;
@@ -26,7 +27,11 @@ namespace AirplaneSimulationTrajectory.ViewModel
         {
             //TODO USE the DI.
             aircraftService = new AircraftService();
+            Aircraft = new FileModelVisual3D();
+            CameraView3D = new HelixViewport3D();
+            MainViewport3D = new HelixViewport3D();
             Clouds = MaterialHelper.CreateImageMaterial("pack://application:,,,/Images/clouds.jpg", 0.5);
+            
             var now = DateTime.UtcNow;
             var juneSolstice = new DateTime(now.Year, 6, 22);
 
@@ -107,7 +112,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
         private void Calculation(DateTime now, DateTime juneSolstice)
         {
-            SunlightDirection = aircraftService.CalculateMove(now, juneSolstice);
+            SunlightDirection = aircraftService.MovementCalculation(now, juneSolstice);
             CameraView3D.Camera.LookDirection = SunlightDirection;
             CameraView3D.Camera.Position = new Point3D() - CameraView3D.Camera.LookDirection;
             CameraView3D.Title = now.ToString("u");
@@ -117,8 +122,11 @@ namespace AirplaneSimulationTrajectory.ViewModel
         private void OnTimerTick(object sender, EventArgs e)
         {
             var result = aircraftService.UpdateAircraftPosition();
-            Aircraft.Transform = result.planeTransform;
-            MainViewport3D.InvalidateVisual();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Aircraft.Transform = result.planeTransform;
+                MainViewport3D.InvalidateVisual();
+            });
 
             //new Plane position
             aircraftService.AircraftPosition = result.secondPosition;
