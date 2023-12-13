@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using AirplaneSimulationTrajectory.ViewModel;
 
 namespace AirplaneSimulationTrajectory.View
 {
@@ -10,6 +11,7 @@ namespace AirplaneSimulationTrajectory.View
         public MainWindow()
         {
             InitializeComponent();
+            this.DataContext = new MainViewModel();
         }
     }
 }
