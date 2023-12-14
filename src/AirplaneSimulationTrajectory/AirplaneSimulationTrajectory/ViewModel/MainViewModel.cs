@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Timers;
 using System.Windows;
 using System.Windows.Media;
@@ -11,6 +11,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
 {
     public class MainViewModel : BaseViewModel
     {
+        private readonly AircraftService _aircraftService;
         private FileModelVisual3D _aircraft;
 
         private HelixViewport3D _cameraView3D;
@@ -20,14 +21,13 @@ namespace AirplaneSimulationTrajectory.ViewModel
         private HelixViewport3D _mainViewport3D;
 
         private Vector3D _sunlightDirection;
-        private readonly AircraftService _aircraftService;
         private Timer _timer;
 
         public MainViewModel()
         {
             //TODO USE the DI.
             _aircraftService = new AircraftService();
-            
+
             Clouds = MaterialHelper.CreateImageMaterial("pack://application:,,,/Images/clouds.jpg", 0.5);
 
             // Initialize the HelixViewport3D instances
@@ -87,9 +87,18 @@ namespace AirplaneSimulationTrajectory.ViewModel
         private void InitializeTimer()
         {
             //create timer for updating
-            _timer = new Timer(30);
-            _timer.AutoReset = true;
-            _timer.Elapsed += (o, e) => { Task.Run(() => OnTimerTick(null, null)); };
+            _timer = new Timer(30)
+            {
+                AutoReset = true,
+                Enabled = true
+            };
+            _timer.Elapsed += (o, e) =>
+            {
+                if (!Application.Current.Dispatcher.HasShutdownStarted)
+                {
+                    Application.Current.Dispatcher.Invoke(() => OnTimerTick(null, null));
+                }
+            };
             _timer.Start();
         }
 
@@ -102,17 +111,32 @@ namespace AirplaneSimulationTrajectory.ViewModel
             CameraView3D.TextBrush = Brushes.White;
         }
 
+        private void OnUIThreadTimerTick()
+        {
+            if (_aircraftService == null || Aircraft == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var (planeTransform, secondPosition) = _aircraftService.UpdateAircraftPosition();
+
+                Aircraft.Transform = planeTransform;
+                MainViewport3D.InvalidateVisual();
+
+                //new Plane position
+                _aircraftService.AircraftPosition = secondPosition;
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception);
+            }
+        }
+
         private void OnTimerTick(object sender, EventArgs e)
         {
-            var result = _aircraftService.UpdateAircraftPosition();
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                Aircraft.Transform = result.planeTransform;
-                MainViewport3D.InvalidateVisual();
-            });
-
-            //new Plane position
-            _aircraftService.AircraftPosition = result.secondPosition;
+            OnUIThreadTimerTick();
         }
     }
 }

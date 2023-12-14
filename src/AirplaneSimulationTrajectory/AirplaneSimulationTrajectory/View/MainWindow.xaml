@@ -7,9 +7,9 @@
         xmlns:viewModel="clr-namespace:AirplaneSimulationTrajectory.ViewModel"
         xmlns:helpers="clr-namespace:AirplaneSimulationTrajectory.Helpers"
         mc:Ignorable="d" Height="480" Width="640">
-    <!-- <Window.DataContext> -->
-    <!--     <viewModel:MainViewModel /> -->
-    <!-- </Window.DataContext> -->
+     <Window.DataContext> 
+         <viewModel:MainViewModel /> 
+     </Window.DataContext> 
     <TabControl TabStripPlacement="Bottom" BorderThickness="0 0 0 1" Padding="0" Margin="0 0 0 2">
         <TabItem Header="Clouds">
             <h:HelixViewport3D x:Name="view1"
