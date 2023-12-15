@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using AirplaneSimulationTrajectory.View;
 using HelixToolkit.Wpf;
 
 namespace AirplaneSimulationTrajectory.Helpers
@@ -6,8 +7,12 @@ namespace AirplaneSimulationTrajectory.Helpers
     public class HelixViewport3DAttachedProperties
     {
         public static readonly DependencyProperty HelixViewportProperty =
-            DependencyProperty.RegisterAttached("HelixViewport", typeof(HelixViewport3D),
-                typeof(HelixViewport3DAttachedProperties));
+            DependencyProperty.RegisterAttached(
+                "HelixViewport",
+                typeof(HelixViewport3D),
+                typeof(HelixViewport3DAttachedProperties),
+                new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
+
 
         public static HelixViewport3D GetHelixViewport(DependencyObject obj)
         {

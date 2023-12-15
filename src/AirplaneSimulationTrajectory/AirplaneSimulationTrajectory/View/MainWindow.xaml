@@ -13,7 +13,7 @@
     <TabControl TabStripPlacement="Bottom" BorderThickness="0 0 0 1" Padding="0" Margin="0 0 0 2">
         <TabItem Header="Clouds">
             <h:HelixViewport3D x:Name="view1"
-                               helpers:HelixViewport3DAttachedProperties.HelixViewport="{Binding MainViewport3D}"
+                               helpers:HelixViewport3DAttachedProperties.HelixViewport="{Binding MainViewport3D, UpdateSourceTrigger=PropertyChanged}"
                                Background="Black"
                                RotationSensitivity="0.3"
                                InfiniteSpin="True"
@@ -24,7 +24,8 @@
                 <h:SphereVisual3D Radius="1.01" Material="{Binding Clouds}" ThetaDiv="90" PhiDiv="45" />
                 <h:FileModelVisual3D x:Name="plane"
                                      helpers:FileModelVisual3DAttachedProperties.FileModelVisual3D="{Binding Aircraft}"
-                                     Source="plane3D.stl" />
+                                     Source="plane3D.stl" 
+                                     Transform="{Binding Aircraft.Transform}" />
             </h:HelixViewport3D>
         </TabItem>
         <TabItem Header="Time zones">
@@ -45,7 +46,6 @@
         </TabItem>
         <TabItem Header="Sunlight">
             <h:HelixViewport3D x:Name="view3"
-                               helpers:HelixViewport3DAttachedProperties.HelixViewport="{Binding CameraView3D, UpdateSourceTrigger=PropertyChanged}"
                                Background="Black"
                                RotationSensitivity="0.3"
                                InfiniteSpin="True"

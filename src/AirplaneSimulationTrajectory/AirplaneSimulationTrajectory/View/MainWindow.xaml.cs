@@ -11,6 +11,7 @@ namespace AirplaneSimulationTrajectory.View
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new MainViewModel();
         }
     }
 }

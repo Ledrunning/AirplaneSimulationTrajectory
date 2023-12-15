@@ -102,13 +102,22 @@ namespace AirplaneSimulationTrajectory.ViewModel
             _timer.Start();
         }
 
+        //private void Calculation(DateTime now, DateTime juneSolstice)
+        //{
+        //    SunlightDirection = _aircraftService.MovementCalculation(now, juneSolstice);
+        //    CameraView3D.Camera.LookDirection = SunlightDirection;
+        //    CameraView3D.Camera.Position = new Point3D() - CameraView3D.Camera.LookDirection;
+        //    CameraView3D.Title = now.ToString("u");
+        //    CameraView3D.TextBrush = Brushes.White;
+        //}
+
         private void Calculation(DateTime now, DateTime juneSolstice)
         {
             SunlightDirection = _aircraftService.MovementCalculation(now, juneSolstice);
-            CameraView3D.Camera.LookDirection = SunlightDirection;
-            CameraView3D.Camera.Position = new Point3D() - CameraView3D.Camera.LookDirection;
-            CameraView3D.Title = now.ToString("u");
-            CameraView3D.TextBrush = Brushes.White;
+            MainViewport3D.Camera.LookDirection = SunlightDirection;
+            MainViewport3D.Camera.Position = new Point3D() - MainViewport3D.Camera.LookDirection;
+            MainViewport3D.Title = now.ToString("u");
+            MainViewport3D.TextBrush = Brushes.White;
         }
 
         private void OnUIThreadTimerTick()
