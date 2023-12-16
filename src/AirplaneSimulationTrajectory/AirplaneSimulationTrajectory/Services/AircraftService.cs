@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Windows.Media.Media3D;
+using AirplaneSimulationTrajectory.Contracts;
 
 namespace AirplaneSimulationTrajectory.Services
 {
-    internal class AircraftService
+    internal class AircraftService : IAircraftService
     {
         private const double EarthRadius = 1;
         private const double PlaneScale = 1;
         private const double DeltaTime = 0.001;
         private const double HeightOverGround = 0.02;
-        private const double MinDistance = 0.01f; //current plane pos
-        private Vector3D _pointA; //from point
-        private Vector3D _pointB; //to point
-        public Vector3D AircraftPosition { get; set; } //current plane pos
+        private const double MinDistance = 0.01f; // Current airplane position
+        private Vector3D _pointA; // From point
+        private Vector3D _pointB; // To point
+        public Vector3D AircraftPosition { get; set; } 
 
         public void SetPlanePath(Vector3D from, Vector3D to)
         {
@@ -28,30 +29,29 @@ namespace AirplaneSimulationTrajectory.Services
 
         public (Transform3D planeTransform, Vector3D secondPosition) UpdateAircraftPosition()
         {
-            //aircraft are arrived in point B
+            // The airplane has arrived at point B
             if ((_pointB - AircraftPosition).Length < MinDistance)
             {
-                return default;
+                return (default, _pointB);
             }
 
-            //calculate orientation and new position of an aircraft
+            // Calculate the orientation and new position of the airplane
             var firstPosition = AircraftPosition + Normalized(_pointB - AircraftPosition) * DeltaTime;
             var secondPosition = EarthRadius * Normalized(firstPosition);
             var aircraftDirections = secondPosition - AircraftPosition;
 
-            //plane forward and up direction
+            // The forward and upward direction of the airplane
             var forward = Normalized(aircraftDirections);
             var up = Normalized(firstPosition);
 
-            //apply transform
+            // Apply transform
             var planeTransform = GetPlaneTransform(forward, up, firstPosition * (1 + HeightOverGround));
 
             return (planeTransform, secondPosition);
         }
 
-        public Transform3D GetPlaneTransform(Vector3D forward, Vector3D up, Vector3D pos)
+        private Transform3D GetPlaneTransform(Vector3D forward, Vector3D up, Vector3D position)
         {
-            //look at
             var v1 = forward;
             var v3 = up;
             var v2 = Vector3D.CrossProduct(v1, v3);
@@ -62,18 +62,15 @@ namespace AirplaneSimulationTrajectory.Services
                 v3.X, v3.Y, v3.Z, 0,
                 0, 0, 0, 1);
 
-            //scale
             matrix3D.Scale(new Vector3D(PlaneScale, PlaneScale, PlaneScale));
 
-            //pos
-            matrix3D.Translate(pos);
+            matrix3D.Translate(position);
 
             return new MatrixTransform3D(matrix3D);
         }
 
         public Vector3D MovementCalculation(DateTime now, DateTime juneSolstice)
         {
-            // todo: check calculation - this is probably not correct
             var declination = 23.45 * Math.Cos((now.DayOfYear - juneSolstice.DayOfYear) / 365.25 * 2 * Math.PI);
             var phi = -now.Hour / 24.0 * Math.PI * 2;
             var theta = declination / 180 * Math.PI;

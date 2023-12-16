@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using AirplaneSimulationTrajectory.View;
 using HelixToolkit.Wpf;
 
 namespace AirplaneSimulationTrajectory.Helpers

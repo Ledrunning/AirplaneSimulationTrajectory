@@ -4,6 +4,7 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using AirplaneSimulationTrajectory.Contracts;
 using AirplaneSimulationTrajectory.Services;
 using HelixToolkit.Wpf;
 
@@ -11,27 +12,19 @@ namespace AirplaneSimulationTrajectory.ViewModel
 {
     public class MainViewModel : BaseViewModel
     {
-        private readonly AircraftService _aircraftService;
+        private readonly IAircraftService _aircraftService;
         private FileModelVisual3D _aircraft;
-
-        private HelixViewport3D _cameraView3D;
-
         private Material _clouds;
-
         private HelixViewport3D _mainViewport3D;
-
         private Vector3D _sunlightDirection;
         private Timer _timer;
 
-        public MainViewModel()
+        public MainViewModel(IAircraftService aircraftService)
         {
-            //TODO USE the DI.
-            _aircraftService = new AircraftService();
-
+            _aircraftService = aircraftService;
             Clouds = MaterialHelper.CreateImageMaterial("pack://application:,,,/Images/clouds.jpg", 0.5);
 
             // Initialize the HelixViewport3D instances
-            CameraView3D = new HelixViewport3D();
             MainViewport3D = new HelixViewport3D();
             Aircraft = new FileModelVisual3D();
 
@@ -43,12 +36,6 @@ namespace AirplaneSimulationTrajectory.ViewModel
             SetAircraftPath();
 
             InitializeTimer();
-        }
-
-        public HelixViewport3D CameraView3D
-        {
-            get => _cameraView3D;
-            set => SetField(ref _cameraView3D, value, nameof(CameraView3D));
         }
 
         public HelixViewport3D MainViewport3D
@@ -102,15 +89,6 @@ namespace AirplaneSimulationTrajectory.ViewModel
             _timer.Start();
         }
 
-        //private void Calculation(DateTime now, DateTime juneSolstice)
-        //{
-        //    SunlightDirection = _aircraftService.MovementCalculation(now, juneSolstice);
-        //    CameraView3D.Camera.LookDirection = SunlightDirection;
-        //    CameraView3D.Camera.Position = new Point3D() - CameraView3D.Camera.LookDirection;
-        //    CameraView3D.Title = now.ToString("u");
-        //    CameraView3D.TextBrush = Brushes.White;
-        //}
-
         private void Calculation(DateTime now, DateTime juneSolstice)
         {
             SunlightDirection = _aircraftService.MovementCalculation(now, juneSolstice);
@@ -134,12 +112,13 @@ namespace AirplaneSimulationTrajectory.ViewModel
                 Aircraft.Transform = planeTransform;
                 MainViewport3D.InvalidateVisual();
 
-                //new Plane position
+                // Set the new position of the airplane
                 _aircraftService.AircraftPosition = secondPosition;
             }
-            catch (Exception exception)
+            catch (Exception e)
             {
-                Debug.WriteLine(exception);
+                MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Debug.WriteLine(e);
             }
         }
 
