@@ -19,14 +19,16 @@ namespace AirplaneSimulationTrajectory.ViewModel
         private Vector3D _sunlightDirection;
         private Timer _timer;
 
-        public MainViewModel(IAircraftService aircraftService)
+        public MainViewModel(IAircraftService aircraftService, 
+            HelixViewport3D helixViewport3D, 
+            FileModelVisual3D fileModelVisual3D)
         {
             _aircraftService = aircraftService;
             Clouds = MaterialHelper.CreateImageMaterial("pack://application:,,,/Images/clouds.jpg", 0.5);
 
             // Initialize the HelixViewport3D instances
-            MainViewport3D = new HelixViewport3D();
-            Aircraft = new FileModelVisual3D();
+            MainViewport3D = helixViewport3D;
+            Aircraft = fileModelVisual3D;
 
             var now = DateTime.UtcNow;
             var juneSolstice = new DateTime(now.Year, 6, 22);

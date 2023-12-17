@@ -1,20 +1,16 @@
-﻿using AirplaneSimulationTrajectory.View;
-using AirplaneSimulationTrajectory.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows;
 using AirplaneSimulationTrajectory.Contracts;
 using AirplaneSimulationTrajectory.Services;
+using AirplaneSimulationTrajectory.View;
+using AirplaneSimulationTrajectory.ViewModel;
+using HelixToolkit.Wpf;
 using SimpleInjector;
 
 namespace AirplaneSimulationTrajectory
 {
     /// <summary>
-    /// Interaction logic for App.xaml
+    ///     Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
     {
@@ -22,37 +18,44 @@ namespace AirplaneSimulationTrajectory
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            base.OnStartup(e);
-
-            _container = new Container();
-
-            _container.Register<IAircraftService, AircraftService>(Lifestyle.Singleton);
-            _container.Register<MainViewModel>(Lifestyle.Singleton);
-
-            // Verify the container's configuration
-            _container.Verify();
-
-            var mainViewModelInstance = _container.GetInstance<MainViewModel>();
-            // Create the main window and set its DataContext to the MainViewModel
             try
             {
-                Dispatcher.Invoke(() =>
-                {
-                    var mainWindow = new MainWindow
-                    {
-                        DataContext = mainViewModelInstance
-                    };
-                    mainWindow.Show();
-                });
+                base.OnStartup(e);
 
+                _container = new Container();
+
+                // Register services and types
+                _container.Register<IAircraftService, AircraftService>(Lifestyle.Singleton);
+                _container.Register<HelixViewport3D>(Lifestyle.Singleton);
+                _container.Register<FileModelVisual3D>(Lifestyle.Singleton);
+
+                // Register MainViewModel using a factory delegate
+                _container.Register<MainViewModel>(() =>
+                        new MainViewModel(
+                            _container.GetInstance<IAircraftService>(),
+                            _container.GetInstance<HelixViewport3D>(),
+                            _container.GetInstance<FileModelVisual3D>()
+                        ),
+                    Lifestyle.Singleton);
+
+                // Register MainWindow using a factory delegate
+                _container.Register<MainWindow>(() =>
+                    new MainWindow(_container.GetInstance<MainViewModel>()), Lifestyle.Singleton);
+
+                // Verify the container's configuration
+                _container.Verify();
+
+                // Resolve MainWindow from the container
+                var mainWindow = _container.GetInstance<MainWindow>();
+
+                // Show the main window
+                mainWindow.Show();
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                // Log or handle the exception
-                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine(exception);
+                throw;
             }
-
-            //mainWindow.Show();
         }
 
         protected override void OnExit(ExitEventArgs e)

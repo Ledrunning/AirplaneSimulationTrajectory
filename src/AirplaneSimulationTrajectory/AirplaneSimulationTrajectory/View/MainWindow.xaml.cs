@@ -8,9 +8,14 @@ namespace AirplaneSimulationTrajectory.View
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public MainWindow(MainViewModel mainViewModel)
         {
             InitializeComponent();
+
+            // Set DataContext directly in the constructor
+            DataContext = mainViewModel;
+
+            // Other initialization logic if needed
         }
     }
 }
