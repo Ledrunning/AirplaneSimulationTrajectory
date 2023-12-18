@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using AirplaneSimulationTrajectory.Contracts;
 using AirplaneSimulationTrajectory.Services;
@@ -29,32 +30,28 @@ namespace AirplaneSimulationTrajectory
                 _container.Register<HelixViewport3D>(Lifestyle.Singleton);
                 _container.Register<FileModelVisual3D>(Lifestyle.Singleton);
 
-                // Register MainViewModel using a factory delegate
-                _container.Register<MainViewModel>(() =>
-                        new MainViewModel(
-                            _container.GetInstance<IAircraftService>(),
-                            _container.GetInstance<HelixViewport3D>(),
-                            _container.GetInstance<FileModelVisual3D>()
-                        ),
-                    Lifestyle.Singleton);
+                // Register MainViewModel
+                _container.Register<MainViewModel>(Lifestyle.Singleton);
 
-                // Register MainWindow using a factory delegate
-                _container.Register<MainWindow>(() =>
-                    new MainWindow(_container.GetInstance<MainViewModel>()), Lifestyle.Singleton);
+                // Register MainWindow
+                _container.Register<MainWindow>(Lifestyle.Singleton);
 
                 // Verify the container's configuration
                 _container.Verify();
 
-                // Resolve MainWindow from the container
+                // Resolve MainWindow and MainViewModel from the container
                 var mainWindow = _container.GetInstance<MainWindow>();
+                var mainViewModel = _container.GetInstance<MainViewModel>();
 
-                // Show the main window
+                // Initialize the MainWindow with the MainViewModel
+                mainWindow.Initialize(mainViewModel);
+
+                // Show MainWindow
                 mainWindow.Show();
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception);
-                throw;
+                Debug.WriteLine(exception);
             }
         }
 
