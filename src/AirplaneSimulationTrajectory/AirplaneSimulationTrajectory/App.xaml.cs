@@ -29,25 +29,19 @@ namespace AirplaneSimulationTrajectory
                 _container.Register<IAircraftService, AircraftService>(Lifestyle.Singleton);
                 _container.Register<HelixViewport3D>(Lifestyle.Singleton);
                 _container.Register<FileModelVisual3D>(Lifestyle.Singleton);
-
-                // Register MainViewModel
                 _container.Register<MainViewModel>(Lifestyle.Singleton);
-
-                // Register MainWindow
                 _container.Register<MainWindow>(Lifestyle.Singleton);
+
+                // RegisterInitializer to set MainViewModel in MainWindow
+                _container.RegisterInitializer<MainWindow>(mainWindow =>
+                {
+                    var mainViewModel = _container.GetInstance<MainViewModel>();
+                    mainWindow.Initialize(mainViewModel);
+                    mainWindow.Show();
+                });
 
                 // Verify the container's configuration
                 _container.Verify();
-
-                // Resolve MainWindow and MainViewModel from the container
-                var mainWindow = _container.GetInstance<MainWindow>();
-                var mainViewModel = _container.GetInstance<MainViewModel>();
-
-                // Initialize the MainWindow with the MainViewModel
-                mainWindow.Initialize(mainViewModel);
-
-                // Show MainWindow
-                mainWindow.Show();
             }
             catch (Exception exception)
             {
