@@ -1,0 +1,34 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup .NET Framework
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '4.8'
+
+    - name: Build
+      run: |
+        dotnet restore
+        msbuild /p:Configuration=Release
+
+    - name: Test
+      run: |
+        # Add test commands here
+
+    - name: Publish Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: MyArtifacts
+        path: ./bin/Release
