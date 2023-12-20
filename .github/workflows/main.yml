@@ -20,7 +20,7 @@ jobs:
       run: nuget restore src\AirplaneSimulationTrajectory\AirplaneSimulationTrajectory.sln
 
     - name: Build
-      run: msbuild /p:Configuration=Release AirplaneSimulationTrajectory.sln
+      run: msbuild /p:Configuration=Release src\AirplaneSimulationTrajectory\AirplaneSimulationTrajectory.sln
 
     - name: Publish Artifact
       uses: actions/upload-artifact@v2
