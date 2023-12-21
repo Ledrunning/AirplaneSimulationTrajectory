@@ -26,4 +26,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: MyArtifacts
-        path: src\AirplaneSimulationTrajectory\bin\Release
+        path: .   # Upload all files in the repository
