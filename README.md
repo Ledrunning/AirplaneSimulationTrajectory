@@ -2,7 +2,7 @@
 
 ## Overview
 
-[![Build and Test](https://github.com/Ledrunning/AirplaneSimulationTrajectory/workflows/Build%20and%20Test/badge.svg)](https://github.com/Ledrunning/AirplaneSimulationTrajectory/actions/workflows/main.yml)
+![Build and Test](https://github.com/Ledrunning/AirplaneSimulationTrajectory/actions/workflows/main.yml/badge.svg?event=push)
 
 **Airplane Simulation Trajectory** is a WPF (Windows Presentation Foundation) 3D application that demonstrates the simulation of an airplane's trajectory over the ground. The application utilizes the [Helix Toolkit](https://github.com/helix-toolkit) (Helix3D) for rendering 3D graphics, providing an immersive experience of tracking the path of an airplane.
 
