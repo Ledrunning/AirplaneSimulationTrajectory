@@ -27,12 +27,12 @@ namespace AirplaneSimulationTrajectory.Services
             return vector / vector.Length;
         }
 
-        public (Transform3D planeTransform, Vector3D secondPosition) UpdateAircraftPosition()
+        public (Transform3D planeTransform, Vector3D secondPosition, bool resetTimer) UpdateAircraftPosition()
         {
             // The airplane has arrived at point B
             if ((_pointB - AircraftPosition).Length < MinDistance)
             {
-                return (default, _pointB);
+                return (default, _pointB, true);
             }
 
             // Calculate the orientation and new position of the airplane
@@ -47,7 +47,7 @@ namespace AirplaneSimulationTrajectory.Services
             // Apply transform
             var planeTransform = GetPlaneTransform(forward, up, firstPosition * (1 + HeightOverGround));
 
-            return (planeTransform, secondPosition);
+            return (planeTransform, secondPosition, false);
         }
 
         private Transform3D GetPlaneTransform(Vector3D forward, Vector3D up, Vector3D position)

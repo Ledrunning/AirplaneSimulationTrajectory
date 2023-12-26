@@ -2,10 +2,12 @@
 using System.Diagnostics;
 using System.Timers;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using AirplaneSimulationTrajectory.Contracts;
 using AirplaneSimulationTrajectory.Services;
+using AirplaneSimulationTrajectory.ViewModel.Command;
 using HelixToolkit.Wpf;
 
 namespace AirplaneSimulationTrajectory.ViewModel
@@ -29,15 +31,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
             // Initialize the HelixViewport3D instances
             MainViewport3D = helixViewport3D;
             Aircraft = fileModelVisual3D;
-
-            var now = DateTime.UtcNow;
-            var juneSolstice = new DateTime(now.Year, 6, 22);
-
-            Calculation(now, juneSolstice);
-
-            SetAircraftPath();
-
-            InitializeTimer();
+            InitializeCommand();
         }
 
         public HelixViewport3D MainViewport3D
@@ -91,6 +85,18 @@ namespace AirplaneSimulationTrajectory.ViewModel
             _timer.Start();
         }
 
+        private void StopTimer()
+        {
+            if (_timer == null)
+            {
+                return;
+            }
+
+            _timer.Stop();
+            _timer.Elapsed -= OnTimerTick;
+            _timer.Dispose();
+        }
+
         private void Calculation(DateTime now, DateTime juneSolstice)
         {
             SunlightDirection = _aircraftService.MovementCalculation(now, juneSolstice);
@@ -109,7 +115,13 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
             try
             {
-                var (planeTransform, secondPosition) = _aircraftService.UpdateAircraftPosition();
+                var (planeTransform, secondPosition, resetTimer) = _aircraftService.UpdateAircraftPosition();
+
+                if (resetTimer)
+                {
+                    StopTimer();
+                    return;
+                }
 
                 Aircraft.Transform = planeTransform;
                 MainViewport3D.InvalidateVisual();
@@ -127,6 +139,22 @@ namespace AirplaneSimulationTrajectory.ViewModel
         private void OnTimerTick(object sender, EventArgs e)
         {
             OnUIThreadTimerTick();
+        }
+
+        public ICommand FlightStart { get; private set; }
+
+        private void InitializeCommand()
+        {
+            FlightStart = new RelayCommand(StartCommand);
+        }
+
+        public void StartCommand()
+        {
+            var now = DateTime.UtcNow;
+            var juneSolstice = new DateTime(now.Year, 6, 22);
+            Calculation(now, juneSolstice);
+            SetAircraftPath();
+            InitializeTimer();
         }
     }
 }

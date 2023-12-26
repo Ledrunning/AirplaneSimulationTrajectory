@@ -15,8 +15,8 @@ namespace AirplaneSimulationTrajectory.ViewModel.Command
         /// <param name="canExecute">The execution status logic.</param>
         public RelayCommand(Action execute, Func<bool> canExecute = null)
         {
-            this._execute = execute ?? throw new ArgumentNullException(nameof(execute));
-            this._canExecute = canExecute;
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+            _canExecute = canExecute;
         }
 
         /// <summary>
