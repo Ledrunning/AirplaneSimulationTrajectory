@@ -6,7 +6,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using AirplaneSimulationTrajectory.Contracts;
-using AirplaneSimulationTrajectory.Services;
 using AirplaneSimulationTrajectory.ViewModel.Command;
 using HelixToolkit.Wpf;
 
@@ -32,6 +31,16 @@ namespace AirplaneSimulationTrajectory.ViewModel
             MainViewport3D = helixViewport3D;
             Aircraft = fileModelVisual3D;
             InitializeCommand();
+
+            InitializeAircraftPosition();
+        }
+
+        private void InitializeAircraftPosition()
+        {
+            var now = DateTime.UtcNow;
+            var juneSolstice = new DateTime(now.Year, 6, 22);
+            Calculation(now, juneSolstice);
+            SetAircraftPath();
         }
 
         public HelixViewport3D MainViewport3D
@@ -150,10 +159,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
         public void StartCommand()
         {
-            var now = DateTime.UtcNow;
-            var juneSolstice = new DateTime(now.Year, 6, 22);
-            Calculation(now, juneSolstice);
-            SetAircraftPath();
+            InitializeAircraftPosition();
             InitializeTimer();
         }
     }
