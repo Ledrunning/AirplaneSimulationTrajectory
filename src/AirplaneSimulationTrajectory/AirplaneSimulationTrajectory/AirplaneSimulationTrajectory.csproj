@@ -90,6 +90,18 @@
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\Command\RelayCommand.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Page Include="Resources\Style\StyleDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Controls\FlightInfo\FlightInfoControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Controls\FlightInfo\FlightInfoSegmentControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -100,6 +112,13 @@
     </Compile>
     <Compile Include="Constants\EarthConstants.cs" />
     <Compile Include="Converters\CoordinatesConverter.cs" />
+    <Compile Include="View\Controls\FlightInfo\FlightInfoControl.xaml.cs">
+      <DependentUpon>FlightInfoControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Controls\FlightInfo\FlightInfoControlDataContext.cs" />
+    <Compile Include="View\Controls\FlightInfo\FlightInfoSegmentControl.xaml.cs">
+      <DependentUpon>FlightInfoSegmentControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="AirplaneSimulationTrajectory.View.Controls.FlightInfo.FlightInfoControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:flightInfoControl="clr-namespace:AirplaneSimulationTrajectory.View.Controls.FlightInfo"
+             xmlns:flightInfo="clr-namespace:AirplaneSimulationTrajectory.View.Controls.FlightInfo"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="400"
+             Style="{DynamicResource FlightInfo_UserControl}"
+             DataContext="{Binding}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/AirplaneSimulationTrajectory;component/Resources/Style/StyleDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Border>
+        <Border.Effect>
+            <DropShadowEffect Color="Gray" Opacity="0.5" />
+        </Border.Effect>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="Flight information" />
+            <flightInfo:FlightInfoSegmentControl Grid.Row="1" Description="Flight information" Info="{Binding CurrentTime, UpdateSourceTrigger=PropertyChanged}" />
+            <flightInfo:FlightInfoSegmentControl Grid.Row="2" Description="Current time" Info="{Binding TotalFlightTime}" />
+            <flightInfo:FlightInfoSegmentControl Grid.Row="3" Description="Total time" Info="{Binding FlightLength}" />
+            <flightInfo:FlightInfoSegmentControl Grid.Row="4" Description="Length" Info="{Binding Temperature}" />
+            <flightInfo:FlightInfoSegmentControl Grid.Row="5" Description="Coordinates" Info="{Binding Coordinates, UpdateSourceTrigger=PropertyChanged}" />
+        </Grid>
+    </Border>
+</UserControl>
