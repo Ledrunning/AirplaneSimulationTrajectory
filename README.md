@@ -6,6 +6,10 @@
 
 **Airplane Simulation Trajectory** is a WPF (Windows Presentation Foundation) 3D application that demonstrates the simulation of an airplane's trajectory over the ground. The application utilizes the [Helix Toolkit](https://github.com/helix-toolkit) (Helix3D) for rendering 3D graphics, providing an immersive experience of tracking the path of an airplane.
 
+## UI layout
+
+ ![](aircraft2.gif)
+
 ## Features
 
 - **3D Visualization:** Utilizes Helix3D to create a visually engaging representation of an airplane's trajectory.
@@ -29,7 +33,7 @@ Open the solution file (AirplaneSimulationTrajectory.sln) in Visual Studio.
 Build the solution and run the application to start the Airplane Simulation Trajectory experience.
 
 ## Usage
-- Upon launching the application, you will be presented with the 3D visualization of the airplane trajectory.
+- Upon launching the application, you will be presented with a 3D visualization of the airplane trajectory.
 - Use the provided controls to interact with the simulation, adjust settings, and explore the features.
 
 ## Contributing
