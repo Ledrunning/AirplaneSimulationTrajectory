@@ -1,31 +1,24 @@
-﻿using AirplaneSimulationTrajectory.ViewModel;
+﻿using AirplaneSimulationTrajectory.Contracts;
+using AirplaneSimulationTrajectory.ViewModel;
 
 namespace AirplaneSimulationTrajectory.View.Controls.FlightInfo
 {
-    public class FlightInfoControlDataContext : BaseViewModel
+    public class FlightInfoControlDataContext : BaseViewModel, IFlightInfoControlDataContext
     {
-        private string _title;
         private string _coordinates;
         private string _currentTime;
+        private string _title;
 
         public string Title
         {
             get => _title;
-            set
-            {
-                _title = value;
-                OnPropertyChanged(nameof(Title));
-            }
+            set => SetField(ref _title, value);
         }
 
         public string CurrentTime
         {
             get => _currentTime;
-            set
-            {
-                _currentTime = value;
-                OnPropertyChanged(nameof(CurrentTime));
-            }
+            set => SetField(ref _currentTime, value);
         }
 
         public string TotalFlightTime { get; set; }
@@ -35,11 +28,16 @@ namespace AirplaneSimulationTrajectory.View.Controls.FlightInfo
         public string Coordinates
         {
             get => _coordinates;
-            set
-            {
-                _coordinates = value;
-                OnPropertyChanged(nameof(Coordinates));
-            }
+            set => SetField(ref _coordinates, value);
+        }
+
+        public void InitializeData()
+        {
+            CurrentTime = null;
+            Coordinates = "test";
+            Temperature = "-35*";
+            FlightLength = "5400";
+            TotalFlightTime = "14h";
         }
     }
 }
