@@ -83,7 +83,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Contracts\IAircraftService.cs" />
-    <Compile Include="Contracts\IFlightInfoControlDataContext.cs" />
+    <Compile Include="Contracts\IFlightInfoViewModel.cs" />
     <Compile Include="Converters\DebugConverter.cs" />
     <Compile Include="Helpers\FileModelVisual3DAttachedProperties.cs" />
     <Compile Include="Helpers\HelixViewport3DAttachedProperties.cs" />
@@ -96,10 +96,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Controls\FlightInfo\FlightInfoControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Controls\FlightInfo\FlightInfoSegmentControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -116,10 +112,7 @@
     <Compile Include="View\Controls\FlightInfo\FlightInfoControl.xaml.cs">
       <DependentUpon>FlightInfoControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Controls\FlightInfo\FlightInfoControlDataContext.cs" />
-    <Compile Include="View\Controls\FlightInfo\FlightInfoSegmentControl.xaml.cs">
-      <DependentUpon>FlightInfoSegmentControl.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="ViewModel\FlightInfoViewModel.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

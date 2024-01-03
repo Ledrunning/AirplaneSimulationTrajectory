@@ -1,6 +1,6 @@
 ﻿namespace AirplaneSimulationTrajectory.Contracts
 {
-    public interface IFlightInfoControlDataContext
+    public interface IFlightInfoViewModel
     {
         string Title { get; set; }
         string CurrentTime { get; set; }

@@ -1,13 +1,18 @@
 ﻿using AirplaneSimulationTrajectory.Contracts;
-using AirplaneSimulationTrajectory.ViewModel;
 
-namespace AirplaneSimulationTrajectory.View.Controls.FlightInfo
+namespace AirplaneSimulationTrajectory.ViewModel
 {
-    public class FlightInfoControlDataContext : BaseViewModel, IFlightInfoControlDataContext
+    public class FlightInfoViewModel : BaseViewModel, IFlightInfoViewModel
     {
         private string _coordinates;
         private string _currentTime;
+        private string _temperature;
         private string _title;
+
+        public FlightInfoViewModel()
+        {
+            InitializeData();
+        }
 
         public string Title
         {
@@ -23,7 +28,12 @@ namespace AirplaneSimulationTrajectory.View.Controls.FlightInfo
 
         public string TotalFlightTime { get; set; }
         public string FlightLength { get; set; }
-        public string Temperature { get; set; }
+
+        public string Temperature
+        {
+            get => _temperature;
+            set => SetField(ref _temperature, value);
+        }
 
         public string Coordinates
         {

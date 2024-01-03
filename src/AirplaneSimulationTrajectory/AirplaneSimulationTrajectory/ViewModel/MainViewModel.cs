@@ -14,7 +14,6 @@ namespace AirplaneSimulationTrajectory.ViewModel
     public class MainViewModel : BaseViewModel
     {
         private readonly IAircraftService _aircraftService;
-        private readonly IFlightInfoControlDataContext _flightInfoControl;
         private FileModelVisual3D _aircraft;
         private Material _clouds;
         private HelixViewport3D _mainViewport3D;
@@ -22,12 +21,10 @@ namespace AirplaneSimulationTrajectory.ViewModel
         private Timer _timer;
 
         public MainViewModel(IAircraftService aircraftService,
-            IFlightInfoControlDataContext flightInfoControl,
             HelixViewport3D helixViewport3D, 
             FileModelVisual3D fileModelVisual3D)
         {
             _aircraftService = aircraftService;
-            _flightInfoControl = flightInfoControl;
             Clouds = MaterialHelper.CreateImageMaterial("pack://application:,,,/Images/clouds.jpg", 0.5);
 
             // Initialize the HelixViewport3D instances
@@ -36,8 +33,6 @@ namespace AirplaneSimulationTrajectory.ViewModel
             InitializeCommand();
 
             InitializeAircraftPosition();
-
-            _flightInfoControl.InitializeData();
         }
 
         private void InitializeAircraftPosition()
