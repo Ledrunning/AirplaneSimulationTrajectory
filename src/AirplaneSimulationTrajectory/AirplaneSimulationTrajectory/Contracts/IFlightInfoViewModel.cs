@@ -10,5 +10,7 @@
         string Coordinates { get; set; }
 
         void InitializeData();
+
+        void ClearFields();
     }
 }

@@ -7,12 +7,9 @@ namespace AirplaneSimulationTrajectory.ViewModel
         private string _coordinates;
         private string _currentTime;
         private string _temperature;
+        private string _totalFlightTime;
+        private string _flightLength;
         private string _title;
-
-        public FlightInfoViewModel()
-        {
-            InitializeData();
-        }
 
         public string Title
         {
@@ -26,8 +23,17 @@ namespace AirplaneSimulationTrajectory.ViewModel
             set => SetField(ref _currentTime, value);
         }
 
-        public string TotalFlightTime { get; set; }
-        public string FlightLength { get; set; }
+        public string TotalFlightTime 
+        {
+            get => _totalFlightTime;
+            set => SetField(ref _totalFlightTime, value);
+        }
+
+        public string FlightLength
+        {
+            get => _flightLength;
+            set => SetField(ref _flightLength, value);
+        }
 
         public string Temperature
         {
@@ -45,9 +51,18 @@ namespace AirplaneSimulationTrajectory.ViewModel
         {
             CurrentTime = null;
             Coordinates = "test";
-            Temperature = "-35*";
+            Temperature = "25°C";
             FlightLength = "5400";
             TotalFlightTime = "14h";
+        }
+
+        public void ClearFields()
+        {
+            CurrentTime = string.Empty;
+            Coordinates = string.Empty;
+            Temperature = string.Empty;
+            FlightLength = string.Empty;
+            TotalFlightTime = string.Empty;
         }
     }
 }

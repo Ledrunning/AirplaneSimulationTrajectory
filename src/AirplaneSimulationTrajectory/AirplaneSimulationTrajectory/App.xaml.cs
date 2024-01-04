@@ -48,6 +48,7 @@ namespace AirplaneSimulationTrajectory
             catch (Exception exception)
             {
                 Debug.WriteLine(exception);
+                throw;
             }
         }
 

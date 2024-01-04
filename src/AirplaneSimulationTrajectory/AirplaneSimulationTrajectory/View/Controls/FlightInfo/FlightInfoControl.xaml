@@ -43,9 +43,9 @@
 
             <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding CurrentTime}"
                        Style="{StaticResource FlightInfoSegment}" />
-            <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding TotalTime}"
+            <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding TotalFlightTime}"
                        Style="{StaticResource FlightInfoSegment}" />
-            <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding Length}" Style="{StaticResource FlightInfoSegment}" />
+            <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding FlightLength}" Style="{StaticResource FlightInfoSegment}" />
             <TextBlock Grid.Column="1" Grid.Row="4" Text="{Binding Temperature}"
                        Style="{StaticResource FlightInfoSegment}" />
             <TextBlock Grid.Column="1" Grid.Row="5" Text="{Binding Coordinates}"
