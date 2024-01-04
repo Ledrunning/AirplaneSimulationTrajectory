@@ -5,86 +5,98 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:h="http://helix-toolkit.org/wpf"
         xmlns:helpers="clr-namespace:AirplaneSimulationTrajectory.Helpers"
+        xmlns:flightInfo="clr-namespace:AirplaneSimulationTrajectory.View.Controls.FlightInfo"
         mc:Ignorable="d" Height="680" Width="1024">
-    <TabControl TabStripPlacement="Bottom" BorderThickness="0 0 0 1" Padding="0" Margin="0 0 0 2">
-        <TabControl.Resources>
-            <!-- Common style for HelixViewport3D -->
-            <Style x:Key="HelixViewport3DStyle" TargetType="h:HelixViewport3D">
-                <Setter Property="Background" Value="Black" />
-                <Setter Property="RotationSensitivity" Value="0.3" />
-                <Setter Property="InfiniteSpin" Value="True" />
-                <Setter Property="ZoomExtentsWhenLoaded" Value="True" />
-                <!-- Add other common setters here -->
-            </Style>
-        </TabControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <TabControl Grid.Row="0" TabStripPlacement="Bottom" BorderThickness="0 0 0 1" Padding="0" Margin="0 0 0 2">
+            <TabControl.Resources>
+                <!-- Common style for HelixViewport3D -->
+                <Style x:Key="HelixViewport3DStyle" TargetType="h:HelixViewport3D">
+                    <Setter Property="Background" Value="Black" />
+                    <Setter Property="RotationSensitivity" Value="0.3" />
+                    <Setter Property="InfiniteSpin" Value="True" />
+                    <Setter Property="ZoomExtentsWhenLoaded" Value="True" />
+                    <!-- Add other common setters here -->
+                </Style>
+            </TabControl.Resources>
 
-        <!-- Clouds TabItem -->
-        <TabItem Header="Clouds">
-            <ContentControl>
-                <ContentControl.Content>
-                    <h:HelixViewport3D Style="{StaticResource HelixViewport3DStyle}">
-                        <h:DefaultLights />
-                        <h:SphereVisual3D Radius="1"
+            <!-- Clouds TabItem -->
+            <TabItem Header="Clouds">
+                <ContentControl>
+                    <ContentControl.Content>
+                        <h:HelixViewport3D Style="{StaticResource HelixViewport3DStyle}">
+                            <h:DefaultLights />
+                            <h:SphereVisual3D Radius="1"
                                           Material="{h:ImageMaterial 'pack://application:,,,/Images/earth.jpg'}"
                                           ThetaDiv="180" PhiDiv="90" />
-                        <h:SphereVisual3D Radius="1.01" Material="{Binding Clouds}" ThetaDiv="90" PhiDiv="45" />
-                        <h:FileModelVisual3D x:Name="plane"
+                            <h:SphereVisual3D Radius="1.01" Material="{Binding Clouds}" ThetaDiv="90" PhiDiv="45" />
+                            <h:FileModelVisual3D x:Name="plane"
                                              helpers:FileModelVisual3DAttachedProperties.FileModelVisual3D="{Binding Aircraft}"
                                              Source="plane3D.stl"
                                              Transform="{Binding Aircraft.Transform}" />
-                    </h:HelixViewport3D>
-                </ContentControl.Content>
-            </ContentControl>
-        </TabItem>
+                        </h:HelixViewport3D>
+                    </ContentControl.Content>
+                </ContentControl>
+            </TabItem>
 
-        <!-- Time zones TabItem -->
-        <TabItem Header="Time zones">
-            <ContentControl>
-                <ContentControl.Content>
-                    <h:HelixViewport3D Style="{StaticResource HelixViewport3DStyle}">
-                        <ModelVisual3D>
-                            <ModelVisual3D.Content>
-                                <AmbientLight Color="White" />
-                            </ModelVisual3D.Content>
-                        </ModelVisual3D>
-                        <h:SphereVisual3D Radius="1"
+            <!-- Time zones TabItem -->
+            <TabItem Header="Time zones">
+                <ContentControl>
+                    <ContentControl.Content>
+                        <h:HelixViewport3D Style="{StaticResource HelixViewport3DStyle}">
+                            <ModelVisual3D>
+                                <ModelVisual3D.Content>
+                                    <AmbientLight Color="White" />
+                                </ModelVisual3D.Content>
+                            </ModelVisual3D>
+                            <h:SphereVisual3D Radius="1"
                                           Material="{h:ImageMaterial 'pack://application:,,,/Images/TimeZones2008.png'}"
                                           ThetaDiv="45" PhiDiv="30" />
-                        <h:FileModelVisual3D
+                            <h:FileModelVisual3D
                             helpers:FileModelVisual3DAttachedProperties.FileModelVisual3D="{Binding Aircraft}"
                             Source="plane3D.stl"
                             Transform="{Binding Aircraft.Transform}" />
-                    </h:HelixViewport3D>
-                </ContentControl.Content>
-            </ContentControl>
-        </TabItem>
+                        </h:HelixViewport3D>
+                    </ContentControl.Content>
+                </ContentControl>
+            </TabItem>
 
-        <!-- Sunlight TabItem -->
-        <TabItem Header="Sunlight">
-            <ContentControl>
-                <ContentControl.Content>
-                    <h:HelixViewport3D Style="{StaticResource HelixViewport3DStyle}">
-                        <ModelVisual3D>
-                            <ModelVisual3D.Content>
-                                <DirectionalLight Color="White" Direction="{Binding SunlightDirection}" />
-                            </ModelVisual3D.Content>
-                        </ModelVisual3D>
-                        <h:SphereVisual3D Radius="1"
+            <!-- Sunlight TabItem -->
+            <TabItem Header="Sunlight">
+                <ContentControl>
+                    <ContentControl.Content>
+                        <h:HelixViewport3D Style="{StaticResource HelixViewport3DStyle}">
+                            <ModelVisual3D>
+                                <ModelVisual3D.Content>
+                                    <DirectionalLight Color="White" Direction="{Binding SunlightDirection}" />
+                                </ModelVisual3D.Content>
+                            </ModelVisual3D>
+                            <h:SphereVisual3D Radius="1"
                                           Material="{h:ImageMaterial 'pack://application:,,,/Images/earth.jpg'}"
                                           ThetaDiv="45" PhiDiv="30" />
-                        <h:SphereVisual3D Radius="1" ThetaDiv="45" PhiDiv="30">
-                            <h:SphereVisual3D.Material>
-                                <EmissiveMaterial Color="White"
+                            <h:SphereVisual3D Radius="1" ThetaDiv="45" PhiDiv="30">
+                                <h:SphereVisual3D.Material>
+                                    <EmissiveMaterial Color="White"
                                                   Brush="{h:ImageBrush 'pack://application:,,,/Images/EarthAtNight.png'}" />
-                            </h:SphereVisual3D.Material>
-                        </h:SphereVisual3D>
-                        <h:FileModelVisual3D
+                                </h:SphereVisual3D.Material>
+                            </h:SphereVisual3D>
+                            <h:FileModelVisual3D
                             helpers:FileModelVisual3DAttachedProperties.FileModelVisual3D="{Binding Aircraft}"
                             Source="plane3D.stl"
                             Transform="{Binding Aircraft.Transform}" />
-                    </h:HelixViewport3D>
-                </ContentControl.Content>
-            </ContentControl>
-        </TabItem>
-    </TabControl>
+                        </h:HelixViewport3D>
+                    </ContentControl.Content>
+                </ContentControl>
+            </TabItem>
+        </TabControl>
+        <Button Content="Start" HorizontalAlignment="Left" 
+                Margin="10,10,0,0" Grid.Row="1" 
+                VerticalAlignment="Top" Width="97"
+                Command="{Binding FlightStart}"/>
+        <flightInfo:FlightInfoControl Grid.Row="0" DataContext="{Binding FlightInfoViewModel}" Margin="612,0,0,390" />
+    </Grid>
 </Window>
