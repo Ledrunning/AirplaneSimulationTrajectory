@@ -83,6 +83,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Contracts\IAircraftService.cs" />
+    <Compile Include="Contracts\IFlightInfoViewModel.cs" />
     <Compile Include="Converters\DebugConverter.cs" />
     <Compile Include="Helpers\FileModelVisual3DAttachedProperties.cs" />
     <Compile Include="Helpers\HelixViewport3DAttachedProperties.cs" />
@@ -90,6 +91,14 @@
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\Command\RelayCommand.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Page Include="Resources\Style\StyleDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Controls\FlightInfo\FlightInfoControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -100,6 +109,10 @@
     </Compile>
     <Compile Include="Constants\EarthConstants.cs" />
     <Compile Include="Converters\CoordinatesConverter.cs" />
+    <Compile Include="View\Controls\FlightInfo\FlightInfoControl.xaml.cs">
+      <DependentUpon>FlightInfoControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\FlightInfoViewModel.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

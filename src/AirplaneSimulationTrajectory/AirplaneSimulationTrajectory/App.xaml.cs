@@ -4,6 +4,7 @@ using System.Windows;
 using AirplaneSimulationTrajectory.Contracts;
 using AirplaneSimulationTrajectory.Services;
 using AirplaneSimulationTrajectory.View;
+using AirplaneSimulationTrajectory.View.Controls.FlightInfo;
 using AirplaneSimulationTrajectory.ViewModel;
 using HelixToolkit.Wpf;
 using SimpleInjector;
@@ -27,6 +28,7 @@ namespace AirplaneSimulationTrajectory
 
                 // Register services and types
                 _container.Register<IAircraftService, AircraftService>(Lifestyle.Singleton);
+                _container.Register<IFlightInfoViewModel, FlightInfoViewModel>(Lifestyle.Singleton);
                 _container.Register<HelixViewport3D>(Lifestyle.Singleton);
                 _container.Register<FileModelVisual3D>(Lifestyle.Singleton);
                 _container.Register<MainViewModel>(Lifestyle.Singleton);
@@ -46,6 +48,7 @@ namespace AirplaneSimulationTrajectory
             catch (Exception exception)
             {
                 Debug.WriteLine(exception);
+                throw;
             }
         }
 
