@@ -33,8 +33,7 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Grid.Row="0" Text="Flight information"
-                       Style="{StaticResource FlightInfoSegment}" />
+            <TextBlock Grid.Column="0" Grid.Row="0" Text="Flight information" />
             <TextBlock Grid.Column="0" Grid.Row="1" Text="Current time" Style="{StaticResource FlightInfoSegment}" />
             <TextBlock Grid.Column="0" Grid.Row="2" Text="Total time" Style="{StaticResource FlightInfoSegment}" />
             <TextBlock Grid.Column="0" Grid.Row="3" Text="Length" Style="{StaticResource FlightInfoSegment}" />
