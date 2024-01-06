@@ -1,4 +1,5 @@
 ﻿using AirplaneSimulationTrajectory.Contracts;
+using System;
 
 namespace AirplaneSimulationTrajectory.ViewModel
 {
@@ -54,6 +55,13 @@ namespace AirplaneSimulationTrajectory.ViewModel
             Temperature = "25°C";
             FlightLength = "5400";
             TotalFlightTime = "14h";
+        }
+
+        private int NumberGenerator(int firstRangeNumber, int secondRangeNumber)
+        {
+            var random = new Random();
+            var randomNumber = random.Next(firstRangeNumber, secondRangeNumber);
+            return randomNumber;
         }
 
         public void ClearFields()
