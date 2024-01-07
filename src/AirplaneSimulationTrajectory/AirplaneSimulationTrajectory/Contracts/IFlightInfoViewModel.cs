@@ -11,6 +11,8 @@
 
         void InitializeData();
 
+        void UpdateData(double latitude, double longitude);
+
         void ClearFields();
     }
 }

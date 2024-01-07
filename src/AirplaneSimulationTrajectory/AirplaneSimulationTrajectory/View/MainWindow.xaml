@@ -39,6 +39,8 @@
                                              helpers:FileModelVisual3DAttachedProperties.FileModelVisual3D="{Binding Aircraft}"
                                              Source="plane3D.stl"
                                              Transform="{Binding Aircraft.Transform}" />
+                            <h:TubeVisual3D x:Name="routeTube" 
+                                            Diameter="0.1" ThetaDiv="10" Fill="Blue" />
                         </h:HelixViewport3D>
                     </ContentControl.Content>
                 </ContentControl>

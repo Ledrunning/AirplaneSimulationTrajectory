@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Timers;
 using System.Windows;
@@ -6,6 +7,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using AirplaneSimulationTrajectory.Contracts;
+using AirplaneSimulationTrajectory.Converters;
+using AirplaneSimulationTrajectory.Model;
+using AirplaneSimulationTrajectory.Services;
 using AirplaneSimulationTrajectory.ViewModel.Command;
 using HelixToolkit.Wpf;
 
@@ -16,7 +20,11 @@ namespace AirplaneSimulationTrajectory.ViewModel
         private readonly IAircraftService _aircraftService;
         private FileModelVisual3D _aircraft;
         private Material _clouds;
+
+        private double _latitude;
+        private double _longitude;
         private HelixViewport3D _mainViewport3D;
+        private readonly RouteVisualization _routeVisualization;
         private Vector3D _sunlightDirection;
         private Timer _timer;
 
@@ -35,6 +43,9 @@ namespace AirplaneSimulationTrajectory.ViewModel
             Aircraft = fileModelVisual3D;
             InitializeCommand();
             InitializeAircraftPosition();
+
+            // Create and initialize RouteVisualization
+            _routeVisualization = new RouteVisualization(0.1, 10, Colors.Blue, 1.0);
         }
 
         public HelixViewport3D MainViewport3D
@@ -65,6 +76,12 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
         public IFlightInfoViewModel FlightInfoViewModel { get; }
 
+        private static List<RoutePointModel> GetRoutePoints(Point3D coordinates)
+        {
+            var list = new List<RoutePointModel> { new RoutePointModel(coordinates) };
+            return list;
+        }
+
         private void SetAircraftPath()
         {
             // set start and finish pos of plane
@@ -92,8 +109,8 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
         private void InitializeTimer()
         {
-            // create timer for updating
-            _timer = new Timer(30)
+            // create timer for updating every 100 ms
+            _timer = new Timer(1 * 100)
             {
                 AutoReset = true,
                 Enabled = true
@@ -143,6 +160,19 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
                 // Set the new position of the airplane
                 _aircraftService.AircraftPosition = secondPosition;
+
+                CoordinatesConverter.Point3DToCoordinates(CoordinatesConverter.Vector3DToPoint3D(secondPosition),
+                    out _latitude, out _longitude);
+                FlightInfoViewModel.UpdateData(_latitude, _longitude);
+
+                //var routePoints =
+                //    GetRoutePoints(
+                //        CoordinatesConverter
+                //            .Vector3DToPoint3D(secondPosition)); 
+                //_routeVisualization.Build(routePoints);
+
+                // Add TubeVisual3D to the HelixViewport3D
+                MainViewport3D.Children.Add(_routeVisualization.TubeVisual);
             }
             catch (Exception e)
             {

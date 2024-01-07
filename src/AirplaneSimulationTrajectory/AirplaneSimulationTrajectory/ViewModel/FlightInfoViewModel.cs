@@ -51,17 +51,26 @@ namespace AirplaneSimulationTrajectory.ViewModel
         public void InitializeData()
         {
             CurrentTime = null;
-            Coordinates = "test";
-            Temperature = "25°C";
+            Coordinates = "-/-";
+            Temperature = "-/-";
             FlightLength = "5400";
             TotalFlightTime = "14h";
         }
 
-        private int NumberGenerator(int firstRangeNumber, int secondRangeNumber)
+        private static int NumberGenerator(int firstRangeNumber, int secondRangeNumber)
         {
             var random = new Random();
             var randomNumber = random.Next(firstRangeNumber, secondRangeNumber);
             return randomNumber;
+        }
+
+        public void UpdateData(double latitude, double longitude)
+        {
+            CurrentTime = DateTime.Now.ToShortTimeString();
+            Coordinates = $"{latitude:0.00} {longitude:0.00}";
+            Temperature = $"{NumberGenerator(-15, -10)}°C";
+            FlightLength = "5400";
+            TotalFlightTime = "14h";
         }
 
         public void ClearFields()
