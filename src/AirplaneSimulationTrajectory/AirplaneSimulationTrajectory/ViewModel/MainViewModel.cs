@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Timers;
 using System.Windows;
 using System.Windows.Input;
@@ -18,13 +20,13 @@ namespace AirplaneSimulationTrajectory.ViewModel
     public class MainViewModel : BaseViewModel
     {
         private readonly IAircraftService _aircraftService;
+        private readonly RouteVisualization _routeVisualization;
         private FileModelVisual3D _aircraft;
         private Material _clouds;
 
         private double _latitude;
         private double _longitude;
         private HelixViewport3D _mainViewport3D;
-        private readonly RouteVisualization _routeVisualization;
         private Vector3D _sunlightDirection;
         private Timer _timer;
 
@@ -45,7 +47,15 @@ namespace AirplaneSimulationTrajectory.ViewModel
             InitializeAircraftPosition();
 
             // Create and initialize RouteVisualization
-            _routeVisualization = new RouteVisualization(0.1, 10, Colors.Blue, 1.0);
+            _routeVisualization = new RouteVisualization(0.1, 10, Colors.Red, 1.0);
+            MainViewport3D.Children.Add(_routeVisualization.Model);
+
+            // Add some initial points to the tube path
+            TubePathPoints.Add(new Point3D(0, 0, 0));
+            TubePathPoints.Add(new Point3D(1, 1, 1));
+
+            // Build the tube path initially
+            _routeVisualization.Build(TubePathPoints);
         }
 
         public HelixViewport3D MainViewport3D
@@ -72,11 +82,19 @@ namespace AirplaneSimulationTrajectory.ViewModel
             set => SetField(ref _sunlightDirection, value, nameof(SunlightDirection));
         }
 
+        private ObservableCollection<Point3D> _tubePathPoints = new ObservableCollection<Point3D>();
+
+        public ObservableCollection<Point3D> TubePathPoints
+        {
+            get => _tubePathPoints;
+            set => SetField(ref _tubePathPoints, value);
+        }
+
         public ICommand FlightStart { get; private set; }
 
         public IFlightInfoViewModel FlightInfoViewModel { get; }
 
-        private static List<RoutePointModel> GetRoutePoints(Point3D coordinates)
+        private static IEnumerable<RoutePointModel> GetRoutePoints(Point3D coordinates)
         {
             var list = new List<RoutePointModel> { new RoutePointModel(coordinates) };
             return list;
@@ -101,8 +119,15 @@ namespace AirplaneSimulationTrajectory.ViewModel
         private void Calculation(DateTime now, DateTime juneSolstice)
         {
             SunlightDirection = _aircraftService.MovementCalculation(now, juneSolstice);
-            MainViewport3D.Camera.LookDirection = SunlightDirection;
-            MainViewport3D.Camera.Position = new Point3D() - MainViewport3D.Camera.LookDirection;
+
+            // Assuming the tube is along the Z-axis, adjust the camera position accordingly
+            var cameraPosition = SunlightDirection * 10; // Adjust the multiplier as needed
+            var targetPosition = new Point3D(); // Adjust the target position if needed
+
+            // Set the camera's position and look direction
+            MainViewport3D.Camera.Position = new Point3D(cameraPosition.X, cameraPosition.Y, cameraPosition.Z);
+            MainViewport3D.Camera.LookDirection = targetPosition - MainViewport3D.Camera.Position;
+
             MainViewport3D.Title = now.ToString("u");
             MainViewport3D.TextBrush = Brushes.White;
         }
@@ -161,18 +186,15 @@ namespace AirplaneSimulationTrajectory.ViewModel
                 // Set the new position of the airplane
                 _aircraftService.AircraftPosition = secondPosition;
 
-                CoordinatesConverter.Point3DToCoordinates(CoordinatesConverter.Vector3DToPoint3D(secondPosition),
+                CoordinatesConverter.Point3DToCoordinates(
+                    CoordinatesConverter.Vector3DToPoint3D(secondPosition),
                     out _latitude, out _longitude);
                 FlightInfoViewModel.UpdateData(_latitude, _longitude);
 
-                //var routePoints =
-                //    GetRoutePoints(
-                //        CoordinatesConverter
-                //            .Vector3DToPoint3D(secondPosition)); 
-                //_routeVisualization.Build(routePoints);
+                // Update the tube path dynamically
+                TubePathPoints.Add(CoordinatesConverter.Vector3DToPoint3D(secondPosition));
+                _routeVisualization.Build(TubePathPoints);
 
-                // Add TubeVisual3D to the HelixViewport3D
-                MainViewport3D.Children.Add(_routeVisualization.TubeVisual);
             }
             catch (Exception e)
             {
@@ -180,6 +202,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
                 Debug.WriteLine(e);
             }
         }
+
 
         private void OnTimerTick(object sender, EventArgs e)
         {

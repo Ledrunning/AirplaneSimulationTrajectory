@@ -39,8 +39,16 @@
                                              helpers:FileModelVisual3DAttachedProperties.FileModelVisual3D="{Binding Aircraft}"
                                              Source="plane3D.stl"
                                              Transform="{Binding Aircraft.Transform}" />
-                            <h:TubeVisual3D x:Name="routeTube" 
-                                            Diameter="0.1" ThetaDiv="10" Fill="Blue" />
+                            <h:TubeVisual3D x:Name="routeTube" Diameter="0.1" ThetaDiv="10" Fill="Red" 
+                                            Path="{Binding TubePathPoints}" />
+
+                            <!--<h:TubeVisual3D Diameter="0.1" ThetaDiv="10" Fill="Red">
+                                <h:TubeVisual3D.Path>
+                                    --><!-- Add your path points here --><!--
+                                    <Point3D X="0" Y="0" Z="0" />
+                                    <Point3D X="1" Y="1" Z="1" />
+                                </h:TubeVisual3D.Path>
+                            </h:TubeVisual3D>-->
                         </h:HelixViewport3D>
                     </ContentControl.Content>
                 </ContentControl>

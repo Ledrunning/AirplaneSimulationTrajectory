@@ -1,50 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows.Media;
-using System.Windows.Threading;
-using AirplaneSimulationTrajectory.Model;
+using System.Windows.Media.Media3D;
 using HelixToolkit.Wpf;
 
 namespace AirplaneSimulationTrajectory.Services
 {
-    public class RouteVisualization : DependencyObject
+    public class RouteVisualization
     {
-        public static readonly DependencyProperty TubeVisualProperty =
-            DependencyProperty.Register("TubeVisual", typeof(TubeVisual3D), typeof(RouteVisualization));
+        private readonly TubeVisual3D _tubeVisual;
 
         public RouteVisualization(double diameter, int thetaDiv, Color color, double opacity)
         {
-            TubeVisual = new TubeVisual3D
+            _tubeVisual = new TubeVisual3D
             {
                 Diameter = diameter,
                 ThetaDiv = thetaDiv,
-                Material = MaterialHelper.CreateMaterial(color, opacity)
+                Fill = new SolidColorBrush(color) { Opacity = opacity }
             };
         }
 
-        public TubeVisual3D TubeVisual
-        {
-            get => (TubeVisual3D)GetValue(TubeVisualProperty);
-            set => SetValue(TubeVisualProperty, value);
-        }
+        public ModelVisual3D Model => _tubeVisual;
 
-        public void AddPoint(RoutePointModel point)
+        public void Build(ObservableCollection<Point3D> points)
         {
-            if (Application.Current?.Dispatcher != null)
-            {
-                Application.Current.Dispatcher.BeginInvoke(
-                    DispatcherPriority.Background,
-                    new Action(() => TubeVisual.Path.Add(point.Point3D)));
-            }
-        }
-
-        public void Build(List<RoutePointModel> points)
-        {
-            TubeVisual.Path.Clear();
+            _tubeVisual.Path.Clear();
             foreach (var point in points)
             {
-                AddPoint(point);
+                _tubeVisual.Path.Add(point);
             }
         }
     }
