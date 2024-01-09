@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Timers;
 using System.Windows;
 using System.Windows.Input;
@@ -30,6 +29,8 @@ namespace AirplaneSimulationTrajectory.ViewModel
         private Vector3D _sunlightDirection;
         private Timer _timer;
 
+        private Point3DCollection _tubePathPoints = new Point3DCollection();
+
         public MainViewModel(
             IAircraftService aircraftService,
             IFlightInfoViewModel flightInfoViewModel,
@@ -47,15 +48,12 @@ namespace AirplaneSimulationTrajectory.ViewModel
             InitializeAircraftPosition();
 
             // Create and initialize RouteVisualization
-            _routeVisualization = new RouteVisualization(0.1, 10, Colors.Red, 1.0);
+            _routeVisualization = new RouteVisualization(0.01, 10, Colors.Red, 1.0);
             MainViewport3D.Children.Add(_routeVisualization.Model);
 
-            // Add some initial points to the tube path
+            //// Add some initial points to the tube path
             TubePathPoints.Add(new Point3D(0, 0, 0));
             TubePathPoints.Add(new Point3D(1, 1, 1));
-
-            // Build the tube path initially
-            _routeVisualization.Build(TubePathPoints);
         }
 
         public HelixViewport3D MainViewport3D
@@ -82,12 +80,10 @@ namespace AirplaneSimulationTrajectory.ViewModel
             set => SetField(ref _sunlightDirection, value, nameof(SunlightDirection));
         }
 
-        private ObservableCollection<Point3D> _tubePathPoints = new ObservableCollection<Point3D>();
-
-        public ObservableCollection<Point3D> TubePathPoints
+        public Point3DCollection TubePathPoints
         {
             get => _tubePathPoints;
-            set => SetField(ref _tubePathPoints, value);
+            set => SetField(ref _tubePathPoints, value, nameof(TubePathPoints));
         }
 
         public ICommand FlightStart { get; private set; }
@@ -194,7 +190,6 @@ namespace AirplaneSimulationTrajectory.ViewModel
                 // Update the tube path dynamically
                 TubePathPoints.Add(CoordinatesConverter.Vector3DToPoint3D(secondPosition));
                 _routeVisualization.Build(TubePathPoints);
-
             }
             catch (Exception e)
             {

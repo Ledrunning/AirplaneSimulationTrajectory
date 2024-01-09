@@ -22,7 +22,7 @@ namespace AirplaneSimulationTrajectory.Services
 
         public ModelVisual3D Model => _tubeVisual;
 
-        public void Build(ObservableCollection<Point3D> points)
+        public void Build(Point3DCollection points)
         {
             _tubeVisual.Path.Clear();
             foreach (var point in points)
