@@ -20,6 +20,24 @@ namespace AirplaneSimulationTrajectory.Services
             };
         }
 
+        public double Diameter
+        {
+            get => _tubeVisual.Diameter;
+            set => _tubeVisual.Diameter = value;
+        }
+
+        public int ThetaDiv
+        {
+            get => _tubeVisual.ThetaDiv;
+            set => _tubeVisual.ThetaDiv = value;
+        }
+
+        public Brush Fill
+        {
+            get => _tubeVisual.Fill;
+            set => _tubeVisual.Fill = value;
+        }
+
         public ModelVisual3D Model => _tubeVisual;
 
         public void Build(Point3DCollection points)

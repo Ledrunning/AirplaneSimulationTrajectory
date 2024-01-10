@@ -39,7 +39,12 @@
                                              helpers:FileModelVisual3DAttachedProperties.FileModelVisual3D="{Binding Aircraft}"
                                              Source="plane3D.stl"
                                              Transform="{Binding Aircraft.Transform}" />
-                            <h:TubeVisual3D x:Name="routeTube" Path="{Binding TubePathPoints, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <h:TubeVisual3D x:Name="routeTube" 
+                                            Diameter="{Binding RouteVisualization.Diameter}" 
+                                            ThetaDiv="{Binding RouteVisualization.ThetaDiv}" 
+                                            Fill="{Binding RouteVisualization.Fill}" 
+                                            Path="{Binding TubePathPoints}" />
+
 
                             <!--<h:TubeVisual3D Diameter="0.1" ThetaDiv="10" Fill="Red">
                                 <h:TubeVisual3D.Path>

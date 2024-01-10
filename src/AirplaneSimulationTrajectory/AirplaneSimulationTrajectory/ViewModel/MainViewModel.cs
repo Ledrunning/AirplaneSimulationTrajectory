@@ -19,7 +19,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
     public class MainViewModel : BaseViewModel
     {
         private readonly IAircraftService _aircraftService;
-        private readonly RouteVisualization _routeVisualization;
+        private RouteVisualization _routeVisualization;
         private FileModelVisual3D _aircraft;
         private Material _clouds;
 
@@ -48,12 +48,18 @@ namespace AirplaneSimulationTrajectory.ViewModel
             InitializeAircraftPosition();
 
             // Create and initialize RouteVisualization
-            _routeVisualization = new RouteVisualization(0.01, 10, Colors.Red, 1.0);
+            RouteVisualization = new RouteVisualization(0.01, 10, Colors.Red, 1.0);
             MainViewport3D.Children.Add(_routeVisualization.Model);
 
-            //// Add some initial points to the tube path
-            TubePathPoints.Add(new Point3D(0, 0, 0));
-            TubePathPoints.Add(new Point3D(1, 1, 1));
+            // Add some initial points to the tube path
+            //TubePathPoints.Add(new Point3D(0, 0, 0));
+            //TubePathPoints.Add(new Point3D(0, 1, 1));
+        }
+
+        public RouteVisualization RouteVisualization
+        {
+            get => _routeVisualization;
+            set => SetField(ref _routeVisualization, value);
         }
 
         public HelixViewport3D MainViewport3D
@@ -102,6 +108,9 @@ namespace AirplaneSimulationTrajectory.ViewModel
             var from = new Vector3D(1, 0, 0);
             var to = new Vector3D(0, 1, 1);
             _aircraftService.SetPlanePath(from, to);
+
+            var startTubePoint = CoordinatesConverter.Vector3DToPoint3D(from);
+            TubePathPoints.Add(startTubePoint);
         }
 
         private void InitializeAircraftPosition()

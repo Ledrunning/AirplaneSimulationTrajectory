@@ -4,7 +4,6 @@ using System.Windows;
 using AirplaneSimulationTrajectory.Contracts;
 using AirplaneSimulationTrajectory.Services;
 using AirplaneSimulationTrajectory.View;
-using AirplaneSimulationTrajectory.View.Controls.FlightInfo;
 using AirplaneSimulationTrajectory.ViewModel;
 using HelixToolkit.Wpf;
 using SimpleInjector;
