@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Timers;
 using System.Windows;
@@ -48,12 +47,14 @@ namespace AirplaneSimulationTrajectory.ViewModel
             InitializeAircraftPosition();
 
             // Create and initialize RouteVisualization
-            RouteVisualization = new RouteVisualization(0.01, 10, Colors.Red, 1.0);
+            RouteVisualization = new RouteVisualization(0.1, 10, Colors.Red, 1.0);
             MainViewport3D.Children.Add(_routeVisualization.Model);
 
             // Add some initial points to the tube path
-            //TubePathPoints.Add(new Point3D(0, 0, 0));
-            //TubePathPoints.Add(new Point3D(0, 1, 1));
+            TubePathPoints.Add(_aircraftService.NormalizePoint(new Point3D(1, 0, 0)));
+            TubePathPoints.Add(_aircraftService.NormalizePoint(new Point3D(0, 0.707, 0.707)));
+            //var s = CoordinatesConverter.Vector3DToPoint3D(_aircraftService.AircraftPosition);
+            //TubePathPoints.Add(s);
         }
 
         public RouteVisualization RouteVisualization
@@ -107,10 +108,9 @@ namespace AirplaneSimulationTrajectory.ViewModel
             // set start and finish pos of plane
             var from = new Vector3D(1, 0, 0);
             var to = new Vector3D(0, 1, 1);
-            _aircraftService.SetPlanePath(from, to);
-
-            var startTubePoint = CoordinatesConverter.Vector3DToPoint3D(from);
-            TubePathPoints.Add(startTubePoint);
+            var (pointA, pointB) = _aircraftService.SetPlanePath(from, to);
+            //TubePathPoints.Add(CoordinatesConverter.Vector3DToPoint3D(pointA));
+            //TubePathPoints.Add(CoordinatesConverter.Vector3DToPoint3D(pointB));
         }
 
         private void InitializeAircraftPosition()
