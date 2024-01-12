@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Timers;
 using System.Windows;
 using System.Windows.Input;
@@ -38,7 +39,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
         {
             _aircraftService = aircraftService;
             FlightInfoViewModel = flightInfoViewModel;
-            Clouds = MaterialHelper.CreateImageMaterial("pack://application:,,,/Images/clouds.jpg", 0.5);
+            //Clouds = MaterialHelper.CreateImageMaterial("pack://application:,,,/Images/clouds.jpg", 0.5);
 
             // Initialize the HelixViewport3D instances
             MainViewport3D = helixViewport3D;
@@ -51,10 +52,12 @@ namespace AirplaneSimulationTrajectory.ViewModel
             MainViewport3D.Children.Add(_routeVisualization.Model);
 
             // Add some initial points to the tube path
-            TubePathPoints.Add(_aircraftService.NormalizePoint(new Point3D(1, 0, 0)));
-            TubePathPoints.Add(_aircraftService.NormalizePoint(new Point3D(0, 0.707, 0.707)));
-            //var s = CoordinatesConverter.Vector3DToPoint3D(_aircraftService.AircraftPosition);
-            //TubePathPoints.Add(s);
+            var f = TrajectoryData.Points[0].Point3D;
+            var l = TrajectoryData.Points.Last().Point3D;
+            TubePathPoints.Add(_aircraftService.NormalizePoint(new Point3D(f.X, f.Y, f.Z)));
+            TubePathPoints.Add(_aircraftService.NormalizePoint(new Point3D(l.X, l.Y, l.Z)));
+
+            _routeVisualization.Build(TubePathPoints);
         }
 
         public RouteVisualization RouteVisualization
@@ -97,11 +100,6 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
         public IFlightInfoViewModel FlightInfoViewModel { get; }
 
-        private static IEnumerable<RoutePointModel> GetRoutePoints(Point3D coordinates)
-        {
-            var list = new List<RoutePointModel> { new RoutePointModel(coordinates) };
-            return list;
-        }
 
         private void SetAircraftPath()
         {
@@ -196,9 +194,9 @@ namespace AirplaneSimulationTrajectory.ViewModel
                     out _latitude, out _longitude);
                 FlightInfoViewModel.UpdateData(_latitude, _longitude);
 
-                // Update the tube path dynamically
-                TubePathPoints.Add(CoordinatesConverter.Vector3DToPoint3D(secondPosition));
-                _routeVisualization.Build(TubePathPoints);
+                // TODO it does not work. Update the tube path dynamically
+                //TubePathPoints.Add(CoordinatesConverter.Vector3DToPoint3D(secondPosition));
+                //_routeVisualization.Build(TubePathPoints);
             }
             catch (Exception e)
             {
