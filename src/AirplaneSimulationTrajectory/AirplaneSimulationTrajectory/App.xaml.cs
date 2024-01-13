@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Media;
 using AirplaneSimulationTrajectory.Contracts;
 using AirplaneSimulationTrajectory.Services;
 using AirplaneSimulationTrajectory.View;
@@ -26,6 +27,10 @@ namespace AirplaneSimulationTrajectory
                 _container = new Container();
 
                 // Register services and types
+
+                _container.Register(() =>
+                    new RouteVisualization(0.02, 10, Colors.Red, 1.0), Lifestyle.Singleton);
+
                 _container.Register<IAircraftService, AircraftService>(Lifestyle.Singleton);
                 _container.Register<IFlightInfoViewModel, FlightInfoViewModel>(Lifestyle.Singleton);
                 _container.Register<HelixViewport3D>(Lifestyle.Singleton);

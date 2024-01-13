@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Media.Media3D;
 using AirplaneSimulationTrajectory.Contracts;
+using AirplaneSimulationTrajectory.Model;
 
 namespace AirplaneSimulationTrajectory.Services
 {
@@ -15,12 +16,11 @@ namespace AirplaneSimulationTrajectory.Services
         private Vector3D _pointB; // To point
         public Vector3D AircraftPosition { get; set; }
 
-        public (Vector3D pointA, Vector3D pointB) SetPlanePath(Vector3D from, Vector3D to)
+        public void SetPlanePath(Vector3D from, Vector3D to)
         {
             _pointA = Normalized(from) * EarthRadius;
             _pointB = Normalized(to) * EarthRadius;
             AircraftPosition = _pointA;
-            return (_pointA, _pointB);
         }
 
         public (Transform3D planeTransform, Vector3D secondPosition, bool resetTimer) UpdateAircraftPosition()
@@ -54,15 +54,16 @@ namespace AirplaneSimulationTrajectory.Services
             return -new Vector3D(Math.Cos(phi) * Math.Cos(theta), Math.Sin(phi) * Math.Cos(theta), Math.Sin(theta));
         }
 
-        private static Vector3D Normalized(Vector3D vector)
-        {
-            return vector / vector.Length;
-        }
-
         public Point3D NormalizePoint(Point3D point)
         {
             var length = Math.Sqrt(point.X * point.X + point.Y * point.Y + point.Z * point.Z);
-            return new Point3D(EarthRadius * point.X / length, EarthRadius * point.Y / length, EarthRadius * point.Z / length);
+            return new Point3D(EarthRadius * point.X / length, EarthRadius * point.Y / length,
+                EarthRadius * point.Z / length);
+        }
+
+        private static Vector3D Normalized(Vector3D vector)
+        {
+            return vector / vector.Length;
         }
 
         private Transform3D GetPlaneTransform(Vector3D forward, Vector3D up, Vector3D position)
@@ -82,6 +83,17 @@ namespace AirplaneSimulationTrajectory.Services
             matrix3D.Translate(position);
 
             return new MatrixTransform3D(matrix3D);
+        }
+
+        public Point3DCollection AddTubeRoutePoints()
+        {
+            var points = new Point3DCollection();
+            foreach (var point in TrajectoryData.Points)
+            {
+                points.Add(NormalizePoint(point.Point3D));
+            }
+
+            return points;
         }
     }
 }
