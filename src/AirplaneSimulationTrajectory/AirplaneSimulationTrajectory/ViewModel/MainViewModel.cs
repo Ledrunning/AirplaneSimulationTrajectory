@@ -42,18 +42,17 @@ namespace AirplaneSimulationTrajectory.ViewModel
             FlightInfoViewModel = flightInfoViewModel;
             //Clouds = MaterialHelper.CreateImageMaterial("pack://application:,,,/Images/clouds.jpg", 0.5);
 
-            // Initialize the HelixViewport3D instances
             MainViewport3D = helixViewport3D;
             Aircraft = fileModelVisual3D;
+
+            RouteVisualization = routeVisualization;
+            MainViewport3D.Children.Add(RouteVisualization.Model);
+
             InitializeCommand();
             InitializeAircraftPosition();
 
-            // Create and initialize RouteVisualization
-            RouteVisualization = routeVisualization;
-            MainViewport3D.Children.Add(_routeVisualization.Model);
-
-            TubePathPoints = _aircraftService.AddTubeRoutePoints();
-            _routeVisualization.Build(TubePathPoints);
+            //TubePathPoints = _aircraftService.AddTubeRoutePoints();
+            //_routeVisualization.Build(TubePathPoints);
         }
 
         public RouteVisualization RouteVisualization
@@ -96,26 +95,42 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
         public IFlightInfoViewModel FlightInfoViewModel { get; }
         
-        private void SetAircraftPath()
+        //private void SetAircraftPath()
+        //{
+        //    var start = TrajectoryData.Points.First().Point3D;
+        //    var end = TrajectoryData.Points.Last().Point3D;
+        //    //_aircraftService.SetPlanePath(new Vector3D(start.X, start.Y, start.Z), new Vector3D(end.X, end.Y, end.Z));
+        //}
+
+        public void SetPlanePathFromTube()
         {
-            // set start and finish pos of plane
-            var f = TrajectoryData.Points[0].Point3D;
-            var l = TrajectoryData.Points[17].Point3D;
-            var from = new Vector3D(1, 0, 0);
-            var to = new Vector3D(0, 1, 1);
-            _aircraftService.SetPlanePath(new Vector3D(f.X, f.Y, f.Z), new Vector3D(l.X, l.Y, l.Z));
+            // Use all points from the tube trajectory as the path for the aircraft
+            var points = TrajectoryData.Points.ToList();
+
+            // Make sure there are at least two points
+            if (points.Count < 2)
+                return;
+
+            // Set the initial position of the aircraft to the first point
+            _aircraftService.AircraftPosition = (Vector3D)points[0].Point3D;
+
+            // Set the entire route as the path for the aircraft
+            TubePathPoints = _aircraftService.AddTubeRoutePoints();
+            _routeVisualization.Build(TubePathPoints);
         }
+
 
         private void InitializeAircraftPosition()
         {
-            var now = DateTime.UtcNow;
-            var juneSolstice = new DateTime(now.Year, 6, 22);
-            Calculation(now, juneSolstice);
-            SetAircraftPath();
+            Calculation();
+            SetPlanePathFromTube();
         }
 
-        private void Calculation(DateTime now, DateTime juneSolstice)
+        private void Calculation()
         {
+            var now = DateTime.UtcNow;
+            var juneSolstice = new DateTime(now.Year, 6, 22);
+
             SunlightDirection = _aircraftService.MovementCalculation(now, juneSolstice);
 
             // Assuming the tube is along the Z-axis, adjust the camera position accordingly

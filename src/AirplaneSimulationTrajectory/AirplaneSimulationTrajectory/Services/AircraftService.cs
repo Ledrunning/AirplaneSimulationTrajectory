@@ -66,7 +66,7 @@ namespace AirplaneSimulationTrajectory.Services
             return vector / vector.Length;
         }
 
-        private Transform3D GetPlaneTransform(Vector3D forward, Vector3D up, Vector3D position)
+        private static Transform3D GetPlaneTransform(Vector3D forward, Vector3D up, Vector3D position)
         {
             var v1 = forward;
             var v3 = up;
