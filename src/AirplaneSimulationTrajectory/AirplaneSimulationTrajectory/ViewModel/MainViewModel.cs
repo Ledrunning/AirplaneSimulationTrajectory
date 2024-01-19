@@ -51,8 +51,8 @@ namespace AirplaneSimulationTrajectory.ViewModel
             InitializeCommand();
             InitializeAircraftPosition();
 
-            //TubePathPoints = _aircraftService.AddTubeRoutePoints();
-            //_routeVisualization.Build(TubePathPoints);
+            TubePathPoints = _aircraftService.AddTubeRoutePoints();
+            _routeVisualization.Build(TubePathPoints);
         }
 
         public RouteVisualization RouteVisualization
@@ -94,36 +94,19 @@ namespace AirplaneSimulationTrajectory.ViewModel
         public ICommand FlightStart { get; private set; }
 
         public IFlightInfoViewModel FlightInfoViewModel { get; }
-        
-        //private void SetAircraftPath()
-        //{
-        //    var start = TrajectoryData.Points.First().Point3D;
-        //    var end = TrajectoryData.Points.Last().Point3D;
-        //    //_aircraftService.SetPlanePath(new Vector3D(start.X, start.Y, start.Z), new Vector3D(end.X, end.Y, end.Z));
-        //}
 
-        public void SetPlanePathFromTube()
+        private void SetAircraftPath()
         {
-            // Use all points from the tube trajectory as the path for the aircraft
-            var points = TrajectoryData.Points.ToList();
-
-            // Make sure there are at least two points
-            if (points.Count < 2)
-                return;
-
-            // Set the initial position of the aircraft to the first point
-            _aircraftService.AircraftPosition = (Vector3D)points[0].Point3D;
-
-            // Set the entire route as the path for the aircraft
-            TubePathPoints = _aircraftService.AddTubeRoutePoints();
-            _routeVisualization.Build(TubePathPoints);
+            var start = TrajectoryData.Points.First().Point3D;
+            var end = TrajectoryData.Points.Last().Point3D;
+            //var end = TrajectoryData.Points[16].Point3D;
+            _aircraftService.SetPlanePath(new Vector3D(start.X, start.Y, start.Z), new Vector3D(end.X, end.Y, end.Z));
         }
-
 
         private void InitializeAircraftPosition()
         {
             Calculation();
-            SetPlanePathFromTube();
+            SetAircraftPath();
         }
 
         private void Calculation()
