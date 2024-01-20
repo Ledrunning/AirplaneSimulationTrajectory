@@ -1,10 +1,11 @@
 ﻿using System.Windows;
+using System.Windows.Media;
 using AirplaneSimulationTrajectory.ViewModel;
 
 namespace AirplaneSimulationTrajectory.View
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {

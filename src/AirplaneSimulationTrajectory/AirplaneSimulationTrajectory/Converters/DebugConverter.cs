@@ -11,6 +11,7 @@ namespace AirplaneSimulationTrajectory.Converters
     /// <local:DebugConverter x:Key="DebugConverter" />
     ///    </Window.Resources>
     /// </summary>
+    [Obsolete("Don't forget to remove!")]
     public class DebugConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

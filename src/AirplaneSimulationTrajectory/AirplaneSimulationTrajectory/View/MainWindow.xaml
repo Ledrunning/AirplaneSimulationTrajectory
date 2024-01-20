@@ -39,6 +39,11 @@
                                              helpers:FileModelVisual3DAttachedProperties.FileModelVisual3D="{Binding Aircraft}"
                                              Source="plane3D.stl"
                                              Transform="{Binding Aircraft.Transform}" />
+                            <h:TubeVisual3D x:Name="routeTube" 
+                                            Diameter="{Binding RouteVisualization.Diameter}" 
+                                            ThetaDiv="{Binding RouteVisualization.ThetaDiv}" 
+                                            Fill="{Binding RouteVisualization.Fill}" 
+                                            Path="{Binding TubePathPoints}" />
                         </h:HelixViewport3D>
                     </ContentControl.Content>
                 </ContentControl>
@@ -61,6 +66,11 @@
                             helpers:FileModelVisual3DAttachedProperties.FileModelVisual3D="{Binding Aircraft}"
                             Source="plane3D.stl"
                             Transform="{Binding Aircraft.Transform}" />
+                            <h:TubeVisual3D x:Name="xrt" 
+                                            Diameter="{Binding RouteVisualization.Diameter}" 
+                                            ThetaDiv="{Binding RouteVisualization.ThetaDiv}" 
+                                            Fill="{Binding RouteVisualization.Fill}" 
+                                            Path="{Binding TubePathPoints}" />
                         </h:HelixViewport3D>
                     </ContentControl.Content>
                 </ContentControl>
