@@ -98,8 +98,8 @@ namespace AirplaneSimulationTrajectory.ViewModel
         private void SetAircraftPath()
         {
             var start = TrajectoryData.Points.First().Point3D;
-            var end = TrajectoryData.Points.Last().Point3D;
-            //var end = TrajectoryData.Points[16].Point3D;
+            //var end = TrajectoryData.Points.Last().Point3D;
+            var end = TrajectoryData.Points[16].Point3D;
             _aircraftService.SetPlanePath(new Vector3D(start.X, start.Y, start.Z), new Vector3D(end.X, end.Y, end.Z));
         }
 
@@ -116,14 +116,9 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
             SunlightDirection = _aircraftService.MovementCalculation(now, juneSolstice);
 
-            // Assuming the tube is along the Z-axis, adjust the camera position accordingly
-            var cameraPosition = SunlightDirection * 10; // Adjust the multiplier as needed
-            var targetPosition = new Point3D(); // Adjust the target position if needed
-
-            // Set the camera's position and look direction
-            MainViewport3D.Camera.Position = new Point3D(cameraPosition.X, cameraPosition.Y, cameraPosition.Z);
-            MainViewport3D.Camera.LookDirection = targetPosition - MainViewport3D.Camera.Position;
-
+            SunlightDirection = _aircraftService.MovementCalculation(now, juneSolstice);
+            MainViewport3D.Camera.LookDirection = SunlightDirection;
+            MainViewport3D.Camera.Position = new Point3D() - MainViewport3D.Camera.LookDirection;
             MainViewport3D.Title = now.ToString("u");
             MainViewport3D.TextBrush = Brushes.White;
         }
