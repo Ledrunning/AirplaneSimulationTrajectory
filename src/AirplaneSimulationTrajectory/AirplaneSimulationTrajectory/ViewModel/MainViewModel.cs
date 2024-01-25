@@ -152,7 +152,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
             _timer.Elapsed -= OnTimerTick;
             _timer.Dispose();
         }
-
+        
         private void OnUIThreadTimerTick()
         {
             if (_aircraftService == null || Aircraft == null)

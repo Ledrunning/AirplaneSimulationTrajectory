@@ -25,29 +25,6 @@ namespace AirplaneSimulationTrajectory.Services
             AircraftPosition = _pointA;
         }
 
-        //public (Transform3D planeTransform, Vector3D secondPosition, bool resetTimer) UpdateAircraftPosition()
-        //{
-        //    // The airplane has arrived at point B
-        //    if ((_pointB - AircraftPosition).Length < MinDistance)
-        //    {
-        //        return (default, _pointB, true);
-        //    }
-
-        //    // Calculate the orientation and new position of the airplane
-        //    var firstPosition = AircraftPosition + Normalized(_pointB - AircraftPosition) * DeltaTime;
-        //    var secondPosition = EarthRadius * Normalized(firstPosition);
-        //    var aircraftDirections = secondPosition - AircraftPosition;
-
-        //    // The forward and upward direction of the airplane
-        //    var forward = Normalized(aircraftDirections);
-        //    var up = Normalized(firstPosition);
-
-        //    // Apply transform
-        //    var planeTransform = GetPlaneTransform(forward, up, firstPosition * (1 + HeightOverGround));
-
-        //    return (planeTransform, secondPosition, false);
-        //}
-
         public (Transform3D planeTransform, Vector3D secondPosition, bool resetTimer) UpdateAircraftPosition()
         {
             // The airplane has arrived at point B
@@ -73,18 +50,20 @@ namespace AirplaneSimulationTrajectory.Services
                 nextTubePoint = (Vector3D)tubePathPoints[i + 1].Point3D;
 
                 // Log current positions
-                Debug.WriteLine($"Aircraft Position: {AircraftPosition}");
-                Debug.WriteLine($"Current Tube Point: {currentTubePoint}");
-                Debug.WriteLine($"Next Tube Point: {nextTubePoint}");
+                //Debug.WriteLine($"Aircraft Position: {AircraftPosition}");
+                //Debug.WriteLine($"Current Tube Point: {currentTubePoint}");
+                //Debug.WriteLine($"Next Tube Point: {nextTubePoint}");
 
                 // Check if the aircraft is within the proximity of the current tube segment
-                double distanceToCurrentSegment = (AircraftPosition - currentTubePoint).Length;
-                Debug.WriteLine($"Distance to Current Segment: {distanceToCurrentSegment}");
-                if (distanceToCurrentSegment < MinDistance)
+                var distanceToCurrentSegment = (AircraftPosition - currentTubePoint).Length;
+                //Debug.WriteLine($"Distance to Current Segment: {distanceToCurrentSegment}");
+                if (!(distanceToCurrentSegment < MinDistance))
                 {
-                    segmentIndex = i;
-                    break;
+                    continue;
                 }
+
+                segmentIndex = i;
+                break;
             }
 
             // Move to the next tube segment if the aircraft is close to the end of the current segment
@@ -114,15 +93,15 @@ namespace AirplaneSimulationTrajectory.Services
             nextTubePoint = (Vector3D)tubePathPoints[segmentIndex + 1].Point3D;
 
             // Debugging information
-            Debug.WriteLine($"Current Tube Segment: {segmentIndex}");
-            Debug.WriteLine($"Current Tube Point: {currentTubePoint}");
-            Debug.WriteLine($"Next Tube Point: {nextTubePoint}");
+            //Debug.WriteLine($"Current Tube Segment: {segmentIndex}");
+            //Debug.WriteLine($"Current Tube Point: {currentTubePoint}");
+            //Debug.WriteLine($"Next Tube Point: {nextTubePoint}");
 
             var alpha = (_pointA - currentTubePoint).Length / (nextTubePoint - currentTubePoint).Length;
             var interpolatedPosition = (1 - alpha) * currentTubePoint + alpha * nextTubePoint;
 
             // Debugging information
-            Debug.WriteLine($"Interpolated Position: {interpolatedPosition}");
+            //Debug.WriteLine($"Interpolated Position: {interpolatedPosition}");
 
             // Calculate the orientation and new position of the airplane
             var firstPosition = AircraftPosition + Normalized(interpolatedPosition - AircraftPosition) * DeltaTime;
@@ -134,8 +113,8 @@ namespace AirplaneSimulationTrajectory.Services
             var up = Normalized(firstPosition);
 
             // Debugging information
-            Debug.WriteLine($"Forward: {forward}");
-            Debug.WriteLine($"Up: {up}");
+            //Debug.WriteLine($"Forward: {forward}");
+            //Debug.WriteLine($"Up: {up}");
 
             // Apply transform
             var planeTransform = GetPlaneTransform(forward, up, firstPosition * (1 + HeightOverGround));
