@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Timers;
@@ -19,13 +18,13 @@ namespace AirplaneSimulationTrajectory.ViewModel
     public class MainViewModel : BaseViewModel
     {
         private readonly IAircraftService _aircraftService;
-        private RouteVisualization _routeVisualization;
         private FileModelVisual3D _aircraft;
         private Material _clouds;
 
         private double _latitude;
         private double _longitude;
         private HelixViewport3D _mainViewport3D;
+        private RouteVisualization _routeVisualization;
         private Vector3D _sunlightDirection;
         private Timer _timer;
 
@@ -152,7 +151,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
             _timer.Elapsed -= OnTimerTick;
             _timer.Dispose();
         }
-        
+
         private void OnUIThreadTimerTick()
         {
             if (_aircraftService == null || Aircraft == null)
@@ -162,7 +161,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
             try
             {
-                var (planeTransform, secondPosition, resetTimer) = _aircraftService.UpdateAircraftPosition();
+                var (planeTransform, secondPosition, resetTimer) = _aircraftService.UpdatePosition();
 
                 if (resetTimer)
                 {
@@ -188,7 +187,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
                 Debug.WriteLine(e);
             }
         }
-        
+
         private void OnTimerTick(object sender, EventArgs e)
         {
             OnUIThreadTimerTick();
