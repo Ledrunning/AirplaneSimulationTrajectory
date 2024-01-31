@@ -161,7 +161,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
             try
             {
-                var (planeTransform, secondPosition, resetTimer) = _aircraftService.UpdatePosition();
+                var (planeTransform, secondPosition, resetTimer) = _aircraftService.UpdateInterpolatePosition(); 
 
                 if (resetTimer)
                 {

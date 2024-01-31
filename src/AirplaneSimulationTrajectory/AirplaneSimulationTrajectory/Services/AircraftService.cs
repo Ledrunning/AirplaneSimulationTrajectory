@@ -24,7 +24,31 @@ namespace AirplaneSimulationTrajectory.Services
             AircraftPosition = _pointA;
         }
 
-        public (Transform3D planeTransform, Vector3D secondPosition, bool resetTimer) UpdatePosition()
+        // Linear route from A to B point
+        public (Transform3D planeTransform, Vector3D secondPosition, bool resetTimer) UpdateAircraftPosition()
+        {
+            // The airplane has arrived at point B
+            if ((_pointB - AircraftPosition).Length < MinDistance)
+            {
+                return (default, _pointB, true);
+            }
+
+            // Calculate the orientation and new position of the airplane
+            var firstPosition = AircraftPosition + Normalized(_pointB - AircraftPosition) * DeltaTime;
+            var secondPosition = EarthRadius * Normalized(firstPosition);
+            var aircraftDirections = secondPosition - AircraftPosition;
+
+            // The forward and upward direction of the airplane
+            var forward = Normalized(aircraftDirections);
+            var up = Normalized(firstPosition);
+
+            // Apply transform
+            var planeTransform = GetPlaneTransform(forward, up, firstPosition * (1 + HeightOverGround));
+
+            return (planeTransform, secondPosition, false);
+        }
+
+        public (Transform3D planeTransform, Vector3D secondPosition, bool resetTimer) UpdateInterpolatePosition()
         {
             // The airplane has arrived at point B
             if ((_pointB - AircraftPosition).Length < MinDistance)
@@ -49,11 +73,13 @@ namespace AirplaneSimulationTrajectory.Services
                 nextTubePoint = (Vector3D)tubePathPoints[i + 1].Point3D;
 
                 // Check if the aircraft is within the proximity of the current tube segment
-                if ((AircraftPosition - currentTubePoint).Length < MinDistance)
+                if (!((AircraftPosition - currentTubePoint).Length < MinDistance))
                 {
-                    segmentIndex = i;
-                    break;
+                    continue;
                 }
+
+                segmentIndex = i;
+                break;
             }
 
             // Move to the next tube segment if the aircraft is close to the end of the current segment
@@ -71,7 +97,7 @@ namespace AirplaneSimulationTrajectory.Services
             currentTubePoint = (Vector3D)tubePathPoints[segmentIndex].Point3D;
             nextTubePoint = (Vector3D)tubePathPoints[segmentIndex + 1].Point3D;
 
-            var alpha = (AircraftPosition - currentTubePoint).Length / (nextTubePoint - currentTubePoint).Length;
+            var alpha = (_pointB - currentTubePoint).Length / (nextTubePoint - currentTubePoint).Length;
             var interpolatedPosition = (1 - alpha) * currentTubePoint + alpha * nextTubePoint;
 
             // Calculate the orientation and new position of the airplane
@@ -79,15 +105,11 @@ namespace AirplaneSimulationTrajectory.Services
             var forward = directionOnTube;
             var up = new Vector3D(0, 1, 0);
 
-            Console.WriteLine($@"AircraftPosition: {AircraftPosition}, Forward: {forward}, Up: {up}");
-
             // Apply transform
             var planeTransform = GetPlaneTransform(forward, up, interpolatedPosition * (1 + HeightOverGround));
 
-            // Default return if no conditions are met
             return (planeTransform, interpolatedPosition, false);
         }
-
 
 
         public Vector3D MovementCalculation(DateTime now, DateTime juneSolstice)
