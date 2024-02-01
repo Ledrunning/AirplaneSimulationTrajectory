@@ -9,6 +9,7 @@ namespace AirplaneSimulationTrajectory.Contracts
         void SetPlanePath(Vector3D from, Vector3D to);
         (Transform3D planeTransform, Vector3D secondPosition, bool resetTimer) UpdateAircraftPosition();
         (Transform3D planeTransform, Vector3D secondPosition, bool resetTimer) UpdateInterpolatePosition();
+        (Transform3D planeTransform, Vector3D secondPosition, bool resetTimer) UpdatePosition();
         Vector3D MovementCalculation(DateTime now, DateTime juneSolstice);
         Point3DCollection AddTubeRoutePoints();
     }

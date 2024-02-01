@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Timers;
 using System.Windows;
@@ -161,7 +160,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
             try
             {
-                var (planeTransform, secondPosition, resetTimer) = _aircraftService.UpdateInterpolatePosition(); 
+                var (planeTransform, secondPosition, resetTimer) = _aircraftService.UpdatePosition(); 
 
                 if (resetTimer)
                 {
@@ -184,7 +183,6 @@ namespace AirplaneSimulationTrajectory.ViewModel
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine(e);
             }
         }
 
