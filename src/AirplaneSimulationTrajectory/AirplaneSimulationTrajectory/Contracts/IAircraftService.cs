@@ -10,6 +10,8 @@ namespace AirplaneSimulationTrajectory.Contracts
         (Transform3D planeTransform, Vector3D secondPosition, bool resetTimer) UpdateAircraftPosition();
         (Transform3D planeTransform, Vector3D secondPosition, bool resetTimer) UpdateInterpolatePosition();
         (Transform3D planeTransform, Vector3D secondPosition, bool resetTimer) UpdatePosition();
+
+        (Transform3D planeTransform, Vector3D secondPosition, bool resetTimer) MoveAlongTrajectory();
         Vector3D MovementCalculation(DateTime now, DateTime juneSolstice);
         Point3DCollection AddTubeRoutePoints();
     }

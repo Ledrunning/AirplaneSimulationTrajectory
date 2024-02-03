@@ -124,7 +124,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
         private void InitializeTimer()
         {
             // create timer for updating every 100 ms
-            _timer = new Timer(1 * 100)
+            _timer = new Timer(1 * 1000)
             {
                 AutoReset = true,
                 Enabled = true
@@ -160,7 +160,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
             try
             {
-                var (planeTransform, secondPosition, resetTimer) = _aircraftService.UpdatePosition(); 
+                var (planeTransform, secondPosition, resetTimer) = _aircraftService.MoveAlongTrajectory(); 
 
                 if (resetTimer)
                 {
