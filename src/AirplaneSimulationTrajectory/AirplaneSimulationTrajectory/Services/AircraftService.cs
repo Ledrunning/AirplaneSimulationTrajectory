@@ -220,15 +220,16 @@ namespace AirplaneSimulationTrajectory.Services
             // Calculate the orientation of the airplane
             var aircraftDirections = nextTubePoint - currentTubePoint;
 
-            // The forward and upward direction of the airplane
+            // The forward direction of the airplane
             var forward = Normalized(aircraftDirections);
 
-            // NOTICE: Calculate the up vector based on the forward vector
-            var up = Vector3D.CrossProduct(Vector3D.CrossProduct(forward, new Vector3D(0, 0, 1)), forward);
-            up.Normalize();
+            // Calculate the upward direction perpendicular to the plane of flight
+            var planeNormal = Vector3D.CrossProduct(forward, new Vector3D(0, 0, 1));
+            var up = Vector3D.CrossProduct(planeNormal, forward);
 
-            Debug.WriteLine($"Forward: {forward}");
-            Debug.WriteLine($"Up: {up}");
+            // Normalize vectors
+            forward.Normalize();
+            up.Normalize();
 
             // Apply transform
             var planeTransform = GetPlaneTransform(forward, up, AircraftPosition * (1 + HeightOverGround));
@@ -280,33 +281,31 @@ namespace AirplaneSimulationTrajectory.Services
             Debug.WriteLine($"Input forward: {forward}");
             Debug.WriteLine($"Input up: {up}");
             Debug.WriteLine($"Input position: {position}");
-            //
-            // var v1 = forward;
-            // var v3 = up;
-            // var v2 = Vector3D.CrossProduct(v1, v3);
-            //
-            // var matrix3D = new Matrix3D(
-            //     v1.X, v1.Y, v1.Z, 0,
-            //     v2.X, v2.Y, v2.Z, 0,
-            //     v3.X, v3.Y, v3.Z, 0,
-            //     0, 0, 0, 1);
-            //
-            // matrix3D.Scale(new Vector3D(PlaneScale, PlaneScale, PlaneScale));
-            //
-            // matrix3D.Translate(position);
-            //
-            // // Log the resulting transformation
-            // Debug.WriteLine($"Resulting transform: {matrix3D}");
+
+            //var v1 = forward;
+            //var v3 = up;
+            //var v2 = Vector3D.CrossProduct(v1, v3);
+
+            //var matrix3D = new Matrix3D(
+            //    v1.X, v1.Y, v1.Z, 0,
+            //    v2.X, v2.Y, v2.Z, 0,
+            //    v3.X, v3.Y, v3.Z, 0,
+            //    0, 0, 0, 1);
+
+            //matrix3D.Scale(new Vector3D(PlaneScale, PlaneScale, PlaneScale));
+
+            //matrix3D.Translate(position);
+
+            //// Log the resulting transformation
+            //Debug.WriteLine($"Resulting transform: {matrix3D}");
 
             //return new MatrixTransform3D(matrix3D);
 
-            forward.Normalize();
-            up = Vector3D.CrossProduct(Vector3D.CrossProduct(forward, up), forward);
-            up.Normalize();
-            
-            var right = Vector3D.CrossProduct(forward, up);
+            // Calculate the right vector perpendicular to both forward and up vectors
+            var right = Vector3D.CrossProduct(up, forward);
             right.Normalize();
-            
+
+            // Create the transformation matrix
             var matrix3D = new Matrix3D(
                 right.X, right.Y, right.Z, 0,
                 up.X, up.Y, up.Z, 0,
@@ -314,7 +313,6 @@ namespace AirplaneSimulationTrajectory.Services
                 position.X, position.Y, position.Z, 1
             );
 
-            Debug.WriteLine($"Resulting transform: {matrix3D}");
             return new MatrixTransform3D(matrix3D);
         }
     }
