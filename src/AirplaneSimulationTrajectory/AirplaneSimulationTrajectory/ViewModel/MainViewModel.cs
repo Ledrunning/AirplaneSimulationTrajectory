@@ -95,10 +95,13 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
         private void SetAircraftPath()
         {
-            var start = TrajectoryData.Points.First().Point3D;
-            //var end = TrajectoryData.Points.Last().Point3D;
-            var end = TrajectoryData.Points[16].Point3D;
-            _aircraftService.SetPlanePath(new Vector3D(start.X, start.Y, start.Z), new Vector3D(end.X, end.Y, end.Z));
+            //var start = TrajectoryData.Points.First().Point3D;
+            ////var end = TrajectoryData.Points.Last().Point3D;
+            //var end = TrajectoryData.Points[16].Point3D;
+            //_aircraftService.SetPlanePath(new Vector3D(start.X, start.Y, start.Z), new Vector3D(end.X, end.Y, end.Z));
+            var startPoint = new Vector3D(1, 0, 0);
+            var endPoint = new Vector3D(0, 1, 1);
+            _aircraftService.SetPlanePath(startPoint, endPoint);
         }
 
         private void InitializeAircraftPosition()
@@ -124,7 +127,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
         private void InitializeTimer()
         {
             // create timer for updating every 100 ms
-            _timer = new Timer(1 * 1000)
+            _timer = new Timer(1 * 100)
             {
                 AutoReset = true,
                 Enabled = true
@@ -160,7 +163,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
             try
             {
-                var (planeTransform, secondPosition, resetTimer) = _aircraftService.MoveAlongTrajectory(); 
+                var (planeTransform, secondPosition, resetTimer) = _aircraftService.UpdatePosition(); 
 
                 if (resetTimer)
                 {
