@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Linq;
 using System.Windows.Media.Media3D;
+using AirplaneSimulationTrajectory.Constants;
 using AirplaneSimulationTrajectory.Contracts;
 using AirplaneSimulationTrajectory.Model;
 
@@ -73,6 +72,11 @@ namespace AirplaneSimulationTrajectory.Services
             }
 
             return points;
+        }
+
+        public RoutePointModel AddRoutePoints(double latitude, double longitude)
+        {
+            return new RoutePointModel(latitude, longitude, EarthConstants.RadiusDelta + EarthConstants.EarthRadius);
         }
 
         private static Vector3D Normalized(Vector3D vector)

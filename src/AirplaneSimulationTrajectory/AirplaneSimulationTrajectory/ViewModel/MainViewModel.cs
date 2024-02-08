@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Timers;
 using System.Windows;
 using System.Windows.Input;
@@ -7,7 +6,6 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using AirplaneSimulationTrajectory.Contracts;
 using AirplaneSimulationTrajectory.Converters;
-using AirplaneSimulationTrajectory.Model;
 using AirplaneSimulationTrajectory.Services;
 using AirplaneSimulationTrajectory.ViewModel.Command;
 using HelixToolkit.Wpf;
@@ -49,8 +47,8 @@ namespace AirplaneSimulationTrajectory.ViewModel
             InitializeCommand();
             InitializeAircraftPosition();
 
-            TubePathPoints = _aircraftService.AddTubeRoutePoints();
-            _routeVisualization.Build(TubePathPoints);
+            //TubePathPoints = _aircraftService.AddTubeRoutePoints();
+            //_routeVisualization.Build(TubePathPoints);
         }
 
         public RouteVisualization RouteVisualization
@@ -95,10 +93,6 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
         private void SetAircraftPath()
         {
-            //var start = TrajectoryData.Points.First().Point3D;
-            ////var end = TrajectoryData.Points.Last().Point3D;
-            //var end = TrajectoryData.Points[16].Point3D;
-            //_aircraftService.SetPlanePath(new Vector3D(start.X, start.Y, start.Z), new Vector3D(end.X, end.Y, end.Z));
             var startPoint = new Vector3D(1, 0, 0);
             var endPoint = new Vector3D(0, 1, 1);
             _aircraftService.SetPlanePath(startPoint, endPoint);
@@ -154,6 +148,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
             _timer.Dispose();
         }
 
+        private readonly Point3DCollection _tubePointsCollection = new Point3DCollection();
         private void OnUIThreadTimerTick()
         {
             if (_aircraftService == null || Aircraft == null)
@@ -163,12 +158,12 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
             try
             {
-                var (planeTransform, secondPosition, resetTimer) = _aircraftService.UpdatePosition(); 
+                var (planeTransform, secondPosition, resetTimer) = _aircraftService.UpdatePosition();
 
                 if (resetTimer)
                 {
                     StopTimer();
-                    FlightInfoViewModel.ClearFields();
+                    ClearFlight();
                     return;
                 }
 
@@ -182,11 +177,23 @@ namespace AirplaneSimulationTrajectory.ViewModel
                     CoordinatesConverter.Vector3DToPoint3D(secondPosition),
                     out _latitude, out _longitude);
                 FlightInfoViewModel.UpdateData(_latitude, _longitude);
+                
+                _tubePointsCollection.Add(_aircraftService.AddRoutePoints(_latitude, _longitude).Point3D);
+                TubePathPoints = _tubePointsCollection;
+
+                _routeVisualization.Build(TubePathPoints);
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void ClearFlight()
+        {
+            FlightInfoViewModel.ClearFields();
+            _tubePointsCollection.Clear();
+            TubePathPoints.Clear();
         }
 
         private void OnTimerTick(object sender, EventArgs e)

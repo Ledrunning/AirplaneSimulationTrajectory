@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AirplaneSimulationTrajectory.Model;
+using System;
 using System.Windows.Media.Media3D;
 
 namespace AirplaneSimulationTrajectory.Contracts
@@ -10,5 +11,6 @@ namespace AirplaneSimulationTrajectory.Contracts
         (Transform3D planeTransform, Vector3D secondPosition, bool resetTimer) UpdatePosition();
         Vector3D MovementCalculation(DateTime now, DateTime juneSolstice);
         Point3DCollection AddTubeRoutePoints();
+        RoutePointModel AddRoutePoints(double latitude, double longitude);
     }
 }
