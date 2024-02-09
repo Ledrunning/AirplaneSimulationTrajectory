@@ -15,6 +15,8 @@ namespace AirplaneSimulationTrajectory.ViewModel
     public class MainViewModel : BaseViewModel
     {
         private readonly IAircraftService _aircraftService;
+
+        private readonly Point3DCollection _tubePointsCollection = new Point3DCollection();
         private FileModelVisual3D _aircraft;
         private Material _clouds;
 
@@ -148,7 +150,6 @@ namespace AirplaneSimulationTrajectory.ViewModel
             _timer.Dispose();
         }
 
-        private readonly Point3DCollection _tubePointsCollection = new Point3DCollection();
         private void OnUIThreadTimerTick()
         {
             if (_aircraftService == null || Aircraft == null)
@@ -177,18 +178,22 @@ namespace AirplaneSimulationTrajectory.ViewModel
                     CoordinatesConverter.Vector3DToPoint3D(secondPosition),
                     out _latitude, out _longitude);
                 FlightInfoViewModel.UpdateData(_latitude, _longitude);
-                
-                _tubePointsCollection.Add(_aircraftService.AddRoutePoints(_latitude, _longitude).Point3D);
-                TubePathPoints = _tubePointsCollection;
 
-                _routeVisualization.Build(TubePathPoints);
+                //_tubePointsCollection.Add(_aircraftService.AddRoutePoints(_latitude, _longitude).Point3D);
+                //TubePathPoints = _tubePointsCollection;
+                
+                // Update tube visualization
+                TubePathPoints = _aircraftService.TubePointsCollection;
+                _routeVisualization.Build(_aircraftService.TubePointsCollection);
+
+                //_routeVisualization.Build(TubePathPoints);
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
+        
         private void ClearFlight()
         {
             FlightInfoViewModel.ClearFields();
