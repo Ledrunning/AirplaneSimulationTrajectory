@@ -46,5 +46,17 @@ namespace AirplaneSimulationTrajectory.Converters
         {
             return (point1 - point2).Length;
         }
+
+        public static void Vector3DToCoordinates(Vector3D vector, out double latitude, out double longitude)
+        {
+            // Spherical coordinates
+            var radius = vector.Length;
+            var inclination = Math.Acos(vector.Z / radius);
+            var azimuth = Math.Atan2(vector.Y, vector.X);
+
+            // Convert radians to grad
+            latitude = inclination * (180 / Math.PI);
+            longitude = azimuth * (180 / Math.PI);
+        }
     }
 }

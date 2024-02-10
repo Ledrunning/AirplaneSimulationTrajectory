@@ -11,7 +11,6 @@ namespace AirplaneSimulationTrajectory.Services
         private Vector3D _pointA; // From point
         private Vector3D _pointB; // To point
         public Vector3D AircraftPosition { get; set; }
-        public Point3DCollection TubePointsCollection { get; set; } = new Point3DCollection();
 
         public void SetPlanePath(Vector3D from, Vector3D to)
         {
@@ -40,30 +39,8 @@ namespace AirplaneSimulationTrajectory.Services
 
             // Apply transform
             var planeTransform = GetPlaneTransform(forward, up, firstPosition * (1 + EarthConstants.HeightOverGround));
-
-            TubePointsCollection = GenerateReducedTubePath(new Point3D(_pointA.X, _pointA.Y, _pointA.Z),
-                new Point3D(secondPosition.X, secondPosition.Y, secondPosition.Z), 1.0);
-
+            
             return (planeTransform, secondPosition, false);
-        }
-
-        public static Point3DCollection GenerateReducedTubePath(Point3D startPoint, Point3D endPoint, double stepSize)
-        {
-            var tubePathPoints = new Point3DCollection();
-
-            var direction = endPoint - startPoint;
-            var distance = direction.Length;
-            direction.Normalize();
-
-            double currentDistance = 0;
-
-            while (currentDistance <= distance)
-            {
-                tubePathPoints.Add(startPoint + direction * currentDistance);
-                currentDistance += stepSize;
-            }
-
-            return tubePathPoints;
         }
         
         public Vector3D MovementCalculation(DateTime now, DateTime juneSolstice)
@@ -77,6 +54,24 @@ namespace AirplaneSimulationTrajectory.Services
         public RoutePointModel AddRoutePoints(double latitude, double longitude)
         {
             return new RoutePointModel(latitude, longitude, EarthConstants.RadiusDelta + EarthConstants.EarthRadius);
+        }
+
+        public Point3D NormalizePoint(Point3D point)
+        {
+            var length = Math.Sqrt(point.X * point.X + point.Y * point.Y + point.Z * point.Z);
+            return new Point3D(EarthConstants.EarthRadius * point.X / length, EarthConstants.EarthRadius * point.Y / length,
+                EarthConstants.EarthRadius * point.Z / length);
+        }
+
+        public Point3DCollection AddTubeRoutePoints()
+        {
+            var points = new Point3DCollection();
+            foreach (var point in TrajectoryData.Points)
+            {
+                points.Add(NormalizePoint(point.Point3D));
+            }
+
+            return points;
         }
 
         private static Vector3D Normalized(Vector3D vector)
