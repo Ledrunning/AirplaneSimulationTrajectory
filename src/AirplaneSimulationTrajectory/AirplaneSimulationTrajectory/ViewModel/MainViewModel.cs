@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using AirplaneSimulationTrajectory.Constants;
 using AirplaneSimulationTrajectory.Contracts;
 using AirplaneSimulationTrajectory.Converters;
 using AirplaneSimulationTrajectory.Model;
@@ -50,8 +52,8 @@ namespace AirplaneSimulationTrajectory.ViewModel
             InitializeCommand();
             InitializeAircraftPosition();
 
-            TubePathPoints = _aircraftService.AddTubeRoutePoints();
-            _routeVisualization.Build(TubePathPoints);
+            TubePathPoints.Add(new RoutePointModel(45.046154, 7.728707, EarthConstants.RadiusDelta + EarthConstants.EarthRadius).Point3D);
+            //_routeVisualization.Build(TubePathPoints);
         }
 
         public RouteVisualization RouteVisualization
@@ -152,6 +154,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
             _timer.Dispose();
         }
 
+        int _counter = 0;
         private void OnUIThreadTimerTick()
         {
             if (_aircraftService == null || Aircraft == null)
@@ -166,6 +169,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
                 if (resetTimer)
                 {
                     StopTimer();
+                    _routeVisualization.Build(TubePathPoints);
                     FlightInfoViewModel.ClearFields();
                     return;
                 }
@@ -180,6 +184,16 @@ namespace AirplaneSimulationTrajectory.ViewModel
                     CoordinatesConverter.Vector3DToPoint3D(secondPosition),
                     out _latitude, out _longitude);
                 FlightInfoViewModel.UpdateData(_latitude, _longitude);
+
+                _counter++;
+
+                if (_counter == 10)
+                {
+                    TubePathPoints.Add(new RoutePointModel(_latitude, _longitude, EarthConstants.RadiusDelta + EarthConstants.EarthRadius).Point3D);
+                    Debug.WriteLine($"Latitude: {_latitude}, Longitude: {_longitude}");
+                    //_routeVisualization.Build(TubePathPoints);
+                    _counter = 0;
+                }
             }
             catch (Exception e)
             {

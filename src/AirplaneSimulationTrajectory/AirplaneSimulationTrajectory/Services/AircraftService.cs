@@ -2,6 +2,7 @@
 using System.Windows.Media.Media3D;
 using AirplaneSimulationTrajectory.Constants;
 using AirplaneSimulationTrajectory.Contracts;
+using AirplaneSimulationTrajectory.Helpers;
 using AirplaneSimulationTrajectory.Model;
 
 namespace AirplaneSimulationTrajectory.Services
@@ -59,8 +60,8 @@ namespace AirplaneSimulationTrajectory.Services
         public Point3D NormalizePoint(Point3D point)
         {
             var length = Math.Sqrt(point.X * point.X + point.Y * point.Y + point.Z * point.Z);
-            return new Point3D(EarthConstants.EarthRadius * point.X / length, EarthConstants.EarthRadius * point.Y / length,
-                EarthConstants.EarthRadius * point.Z / length);
+            return new Point3D(EarthConstants.EarthFlightRadius * point.X / length, EarthConstants.EarthFlightRadius * point.Y / length,
+                EarthConstants.EarthFlightRadius * point.Z / length);
         }
 
         public Point3DCollection AddTubeRoutePoints()
@@ -72,6 +73,17 @@ namespace AirplaneSimulationTrajectory.Services
             }
 
             return points;
+        }
+
+        public Point3DCollection AddTubeRoutePoints(CustomLinkedList<RoutePointModel> points)
+        {
+            var tubePoints = new Point3DCollection();
+            foreach (var point in points)
+            {
+                tubePoints.Add(NormalizePoint(point.Point3D));
+            }
+
+            return tubePoints;
         }
 
         private static Vector3D Normalized(Vector3D vector)
