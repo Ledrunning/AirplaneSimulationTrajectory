@@ -85,7 +85,7 @@ namespace AirplaneSimulationTrajectory.Services
 
             return tubePoints;
         }
-
+        
         private static Vector3D Normalized(Vector3D vector)
         {
             return vector / vector.Length;

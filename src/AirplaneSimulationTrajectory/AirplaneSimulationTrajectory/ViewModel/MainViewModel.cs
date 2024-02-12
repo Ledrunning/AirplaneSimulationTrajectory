@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Input;
@@ -22,6 +21,8 @@ namespace AirplaneSimulationTrajectory.ViewModel
         private readonly IAircraftService _aircraftService;
         private FileModelVisual3D _aircraft;
         private Material _clouds;
+
+        private int _counter;
 
         private double _latitude;
         private double _longitude;
@@ -52,7 +53,9 @@ namespace AirplaneSimulationTrajectory.ViewModel
             InitializeCommand();
             InitializeAircraftPosition();
 
-            TubePathPoints.Add(new RoutePointModel(45.046154, 7.728707, EarthConstants.RadiusDelta + EarthConstants.EarthRadius).Point3D);
+            TubePathPoints.Add(new RoutePointModel(45.046154, 7.728707,
+                EarthConstants.RadiusDelta + EarthConstants.EarthRadius).Point3D);
+            //TubePathPoints = _aircraftService.AddTubeRoutePoints(TrajectoryData.GetRoute());
             //_routeVisualization.Build(TubePathPoints);
         }
 
@@ -154,7 +157,6 @@ namespace AirplaneSimulationTrajectory.ViewModel
             _timer.Dispose();
         }
 
-        int _counter = 0;
         private void OnUIThreadTimerTick()
         {
             if (_aircraftService == null || Aircraft == null)
@@ -175,7 +177,6 @@ namespace AirplaneSimulationTrajectory.ViewModel
                 }
 
                 Aircraft.Transform = planeTransform;
-                MainViewport3D.InvalidateVisual();
 
                 // Set the new position of the airplane
                 _aircraftService.AircraftPosition = secondPosition;
@@ -189,17 +190,30 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
                 if (_counter == 10)
                 {
-                    TubePathPoints.Add(new RoutePointModel(_latitude, _longitude, EarthConstants.RadiusDelta + EarthConstants.EarthRadius).Point3D);
-                    Debug.WriteLine($"Latitude: {_latitude}, Longitude: {_longitude}");
-                    //_routeVisualization.Build(TubePathPoints);
+                    AddAndDrawTubePoints(_latitude, _longitude);
                     _counter = 0;
                 }
+
+                _routeVisualization.Build(TubePathPoints);
+                MainViewport3D.InvalidateVisual();
             }
             catch (Exception e)
             {
+                _counter = 0;
                 MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 Debug.WriteLine(e);
             }
+        }
+
+        private void AddAndDrawTubePoints(double latitude, double longitude)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                TubePathPoints.Add(new RoutePointModel(latitude, longitude,
+                    EarthConstants.RadiusDelta + EarthConstants.EarthRadius).Point3D);
+                Debug.WriteLine($"{latitude},{longitude}");
+                _routeVisualization.Build(TubePathPoints);
+            });
         }
 
         private void OnTimerTick(object sender, EventArgs e)
