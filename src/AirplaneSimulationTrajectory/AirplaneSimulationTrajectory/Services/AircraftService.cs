@@ -63,18 +63,7 @@ namespace AirplaneSimulationTrajectory.Services
             return new Point3D(EarthConstants.EarthFlightRadius * point.X / length, EarthConstants.EarthFlightRadius * point.Y / length,
                 EarthConstants.EarthFlightRadius * point.Z / length);
         }
-
-        public Point3DCollection AddTubeRoutePoints()
-        {
-            var points = new Point3DCollection();
-            foreach (var point in TrajectoryData.Points)
-            {
-                points.Add(NormalizePoint(point.Point3D));
-            }
-
-            return points;
-        }
-
+        
         public Point3DCollection AddTubeRoutePoints(CustomLinkedList<RoutePointModel> points)
         {
             var tubePoints = new Point3DCollection();
@@ -85,7 +74,7 @@ namespace AirplaneSimulationTrajectory.Services
 
             return tubePoints;
         }
-        
+
         private static Vector3D Normalized(Vector3D vector)
         {
             return vector / vector.Length;

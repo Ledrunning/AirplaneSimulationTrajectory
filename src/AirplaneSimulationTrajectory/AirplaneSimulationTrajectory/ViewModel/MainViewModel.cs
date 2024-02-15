@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Timers;
@@ -9,6 +10,7 @@ using System.Windows.Media.Media3D;
 using AirplaneSimulationTrajectory.Constants;
 using AirplaneSimulationTrajectory.Contracts;
 using AirplaneSimulationTrajectory.Converters;
+using AirplaneSimulationTrajectory.Helpers;
 using AirplaneSimulationTrajectory.Model;
 using AirplaneSimulationTrajectory.Services;
 using AirplaneSimulationTrajectory.ViewModel.Command;
@@ -31,8 +33,8 @@ namespace AirplaneSimulationTrajectory.ViewModel
         private Vector3D _sunlightDirection;
         private Timer _timer;
 
-        private Point3DCollection _tubePathPoints = new Point3DCollection();
-
+        private ObservableCollection<Point3D> _tubePathPoints = new ObservableCollection<Point3D>();
+        private readonly CustomLinkedList<RoutePointModel> _flightCoordinates;
         public MainViewModel(
             IAircraftService aircraftService,
             IFlightInfoViewModel flightInfoViewModel,
@@ -40,6 +42,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
             FileModelVisual3D fileModelVisual3D,
             RouteVisualization routeVisualization)
         {
+            _flightCoordinates = TrajectoryData.GetRoute();
             _aircraftService = aircraftService;
             FlightInfoViewModel = flightInfoViewModel;
             //Clouds = MaterialHelper.CreateImageMaterial("pack://application:,,,/Images/clouds.jpg", 0.5);
@@ -53,8 +56,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
             InitializeCommand();
             InitializeAircraftPosition();
 
-            TubePathPoints.Add(new RoutePointModel(45.046154, 7.728707,
-                EarthConstants.RadiusDelta + EarthConstants.EarthRadius).Point3D);
+            TubePathPoints.Add(_flightCoordinates.First().Point3D);
             //TubePathPoints = _aircraftService.AddTubeRoutePoints(TrajectoryData.GetRoute());
             //_routeVisualization.Build(TubePathPoints);
         }
@@ -89,7 +91,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
             set => SetField(ref _sunlightDirection, value, nameof(SunlightDirection));
         }
 
-        public Point3DCollection TubePathPoints
+        public ObservableCollection<Point3D> TubePathPoints
         {
             get => _tubePathPoints;
             set => SetField(ref _tubePathPoints, value, nameof(TubePathPoints));
@@ -101,9 +103,8 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
         private void SetAircraftPath()
         {
-            var start = TrajectoryData.Points.First().Point3D;
-            //var end = TrajectoryData.Points.Last().Point3D;
-            var end = TrajectoryData.Points[16].Point3D;
+            var start = _flightCoordinates.First().Point3D;
+            var end = _flightCoordinates.Last().Point3D;
             _aircraftService.SetPlanePath(new Vector3D(start.X, start.Y, start.Z), new Vector3D(end.X, end.Y, end.Z));
         }
 

@@ -13,5 +13,6 @@ namespace AirplaneSimulationTrajectory.Contracts
         Vector3D MovementCalculation(DateTime now, DateTime juneSolstice);
         Point3DCollection AddTubeRoutePoints(CustomLinkedList<RoutePointModel> points);
         Point3DCollection AddTubeRoutePoints();
+        Point3D NormalizePoint(Point3D point);
     }
 }
