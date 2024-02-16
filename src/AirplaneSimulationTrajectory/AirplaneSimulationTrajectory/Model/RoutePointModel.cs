@@ -15,7 +15,7 @@ namespace AirplaneSimulationTrajectory.Model
         {
             if (radius == null)
             {
-                radius = EarthConstants.EarthRadius;
+                radius = AppConstants.EarthRadius;
             }
 
             Longitude = longitude;

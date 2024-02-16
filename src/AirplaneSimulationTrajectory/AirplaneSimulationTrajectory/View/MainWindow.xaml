@@ -43,7 +43,7 @@
                                             Diameter="{Binding RouteVisualization.Diameter}" 
                                             ThetaDiv="{Binding RouteVisualization.ThetaDiv}" 
                                             Fill="{Binding RouteVisualization.Fill}" 
-                                            Path="{Binding TubePathPoints}" />
+                                            Path="{Binding TubePathPoints, Mode=OneWay}" />
                         </h:HelixViewport3D>
                     </ContentControl.Content>
                 </ContentControl>

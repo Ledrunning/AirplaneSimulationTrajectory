@@ -109,7 +109,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Constants\EarthConstants.cs" />
+    <Compile Include="Constants\AppConstants.cs" />
     <Compile Include="Converters\CoordinatesConverter.cs" />
     <Compile Include="View\Controls\FlightInfo\FlightInfoControl.xaml.cs">
       <DependentUpon>FlightInfoControl.xaml</DependentUpon>
