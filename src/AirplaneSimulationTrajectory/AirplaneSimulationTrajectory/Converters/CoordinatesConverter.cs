@@ -36,15 +36,5 @@ namespace AirplaneSimulationTrajectory.Converters
             var a = Math.Sqrt(pt.X * pt.X + pt.Y * pt.Y);
             lat = Math.Atan2(pt.Z, a) * 180 / Math.PI;
         }
-
-        public static Vector3D Point3DToVector3D(Point3D point3D)
-        {
-            return new Vector3D(point3D.X, point3D.Y, point3D.Z);
-        }
-
-        public static double GetDistance(Vector3D point1, Vector3D point2)
-        {
-            return (point1 - point2).Length;
-        }
     }
 }

@@ -2,7 +2,6 @@
 using System.Windows.Media.Media3D;
 using AirplaneSimulationTrajectory.Constants;
 using AirplaneSimulationTrajectory.Contracts;
-using AirplaneSimulationTrajectory.Model;
 
 namespace AirplaneSimulationTrajectory.Services
 {
@@ -11,12 +10,11 @@ namespace AirplaneSimulationTrajectory.Services
         private Vector3D _pointA; // From point
         private Vector3D _pointB; // To point
         public Vector3D AircraftPosition { get; set; }
-        public Point3DCollection TubePointsCollection { get; set; } = new Point3DCollection();
 
         public void SetPlanePath(Vector3D from, Vector3D to)
         {
-            _pointA = Normalized(from) * EarthConstants.EarthFlightRadius;
-            _pointB = Normalized(to) * EarthConstants.EarthFlightRadius;
+            _pointA = Normalized(from) * AppConstants.EarthFlightRadius;
+            _pointB = Normalized(to) * AppConstants.EarthFlightRadius;
             AircraftPosition = _pointA;
         }
 
@@ -24,14 +22,14 @@ namespace AirplaneSimulationTrajectory.Services
         public (Transform3D planeTransform, Vector3D secondPosition, bool resetTimer) UpdatePosition()
         {
             // The airplane has arrived at point B
-            if ((_pointB - AircraftPosition).Length < EarthConstants.MinDistance)
+            if ((_pointB - AircraftPosition).Length < AppConstants.MinDistance)
             {
                 return (default, _pointB, true);
             }
 
             // Calculate the orientation and new position of the airplane
-            var firstPosition = AircraftPosition + Normalized(_pointB - AircraftPosition) * EarthConstants.DeltaTime;
-            var secondPosition = EarthConstants.EarthFlightRadius * Normalized(firstPosition);
+            var firstPosition = AircraftPosition + Normalized(_pointB - AircraftPosition) * AppConstants.DeltaTime;
+            var secondPosition = AppConstants.EarthFlightRadius * Normalized(firstPosition);
             var aircraftDirections = secondPosition - AircraftPosition;
 
             // The forward and upward direction of the airplane
@@ -39,33 +37,11 @@ namespace AirplaneSimulationTrajectory.Services
             var up = Normalized(firstPosition);
 
             // Apply transform
-            var planeTransform = GetPlaneTransform(forward, up, firstPosition * (1 + EarthConstants.HeightOverGround));
-
-            TubePointsCollection = GenerateReducedTubePath(new Point3D(_pointA.X, _pointA.Y, _pointA.Z),
-                new Point3D(secondPosition.X, secondPosition.Y, secondPosition.Z), 1.0);
+            var planeTransform = GetPlaneTransform(forward, up, firstPosition * (1 + AppConstants.HeightOverGround));
 
             return (planeTransform, secondPosition, false);
         }
 
-        public static Point3DCollection GenerateReducedTubePath(Point3D startPoint, Point3D endPoint, double stepSize)
-        {
-            var tubePathPoints = new Point3DCollection();
-
-            var direction = endPoint - startPoint;
-            var distance = direction.Length;
-            direction.Normalize();
-
-            double currentDistance = 0;
-
-            while (currentDistance <= distance)
-            {
-                tubePathPoints.Add(startPoint + direction * currentDistance);
-                currentDistance += stepSize;
-            }
-
-            return tubePathPoints;
-        }
-        
         public Vector3D MovementCalculation(DateTime now, DateTime juneSolstice)
         {
             var declination = 23.45 * Math.Cos((now.DayOfYear - juneSolstice.DayOfYear) / 365.25 * 2 * Math.PI);
@@ -74,9 +50,12 @@ namespace AirplaneSimulationTrajectory.Services
             return -new Vector3D(Math.Cos(phi) * Math.Cos(theta), Math.Sin(phi) * Math.Cos(theta), Math.Sin(theta));
         }
 
-        public RoutePointModel AddRoutePoints(double latitude, double longitude)
+        public Point3D NormalizePoint(Point3D point)
         {
-            return new RoutePointModel(latitude, longitude, EarthConstants.RadiusDelta + EarthConstants.EarthRadius);
+            var length = Math.Sqrt(point.X * point.X + point.Y * point.Y + point.Z * point.Z);
+            return new Point3D(AppConstants.EarthFlightRadius * point.X / length,
+                AppConstants.EarthFlightRadius * point.Y / length,
+                AppConstants.EarthFlightRadius * point.Z / length);
         }
 
         private static Vector3D Normalized(Vector3D vector)
@@ -97,7 +76,7 @@ namespace AirplaneSimulationTrajectory.Services
                 0, 0, 0, 1);
 
             matrix3D.Scale(
-                new Vector3D(EarthConstants.PlaneScale, EarthConstants.PlaneScale, EarthConstants.PlaneScale));
+                new Vector3D(AppConstants.PlaneScale, AppConstants.PlaneScale, AppConstants.PlaneScale));
 
             matrix3D.Translate(position);
             return new MatrixTransform3D(matrix3D);

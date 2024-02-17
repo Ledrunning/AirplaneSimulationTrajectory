@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace AirplaneSimulationTrajectory.Helpers
 {
+    [Obsolete("Maybe I will make a decision to delete this class")]
     public class CustomLinkedList<T> : List<T>
     {
         private int _currentIndex;
