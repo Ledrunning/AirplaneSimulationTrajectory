@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Timers;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using System.Windows.Threading;
+using AirplaneSimulationTrajectory.Constants;
 using AirplaneSimulationTrajectory.Contracts;
 using AirplaneSimulationTrajectory.Converters;
+using AirplaneSimulationTrajectory.Helpers;
 using AirplaneSimulationTrajectory.Model;
 using AirplaneSimulationTrajectory.Services;
 using AirplaneSimulationTrajectory.ViewModel.Command;
@@ -18,16 +20,17 @@ namespace AirplaneSimulationTrajectory.ViewModel
     public class MainViewModel : BaseViewModel
     {
         private readonly IAircraftService _aircraftService;
+        private readonly CustomLinkedList<RoutePointModel> _flightCoordinates;
         private FileModelVisual3D _aircraft;
-        private Material _clouds;
 
-        private double _latitude;
-        private double _longitude;
+        private Material _clouds;
+        private int _counter;
+
         private HelixViewport3D _mainViewport3D;
+
         private RouteVisualization _routeVisualization;
         private Vector3D _sunlightDirection;
-        private Timer _timer;
-
+        private DispatcherTimer _timer;
         private Point3DCollection _tubePathPoints = new Point3DCollection();
 
         public MainViewModel(
@@ -37,6 +40,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
             FileModelVisual3D fileModelVisual3D,
             RouteVisualization routeVisualization)
         {
+            _flightCoordinates = TrajectoryData.GetRoute();
             _aircraftService = aircraftService;
             FlightInfoViewModel = flightInfoViewModel;
             //Clouds = MaterialHelper.CreateImageMaterial("pack://application:,,,/Images/clouds.jpg", 0.5);
@@ -49,21 +53,18 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
             InitializeCommand();
             InitializeAircraftPosition();
-
-            TubePathPoints = _aircraftService.AddTubeRoutePoints();
-            _routeVisualization.Build(TubePathPoints);
         }
 
         public RouteVisualization RouteVisualization
         {
             get => _routeVisualization;
-            set => SetField(ref _routeVisualization, value);
+            set => SetField(ref _routeVisualization, value, nameof(RouteVisualization));
         }
 
         public HelixViewport3D MainViewport3D
         {
             get => _mainViewport3D;
-            set => SetField(ref _mainViewport3D, value);
+            set => SetField(ref _mainViewport3D, value, nameof(MainViewport3D));
         }
 
         public FileModelVisual3D Aircraft
@@ -96,9 +97,8 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
         private void SetAircraftPath()
         {
-            var start = TrajectoryData.Points.First().Point3D;
-            //var end = TrajectoryData.Points.Last().Point3D;
-            var end = TrajectoryData.Points[16].Point3D;
+            var start = _flightCoordinates.First().Point3D;
+            var end = _flightCoordinates.Last().Point3D;
             _aircraftService.SetPlanePath(new Vector3D(start.X, start.Y, start.Z), new Vector3D(end.X, end.Y, end.Z));
         }
 
@@ -125,18 +125,11 @@ namespace AirplaneSimulationTrajectory.ViewModel
         private void InitializeTimer()
         {
             // create timer for updating every 100 ms
-            _timer = new Timer(1 * 100)
+            _timer = new DispatcherTimer
             {
-                AutoReset = true,
-                Enabled = true
+                Interval = TimeSpan.FromMilliseconds(100)
             };
-            _timer.Elapsed += (o, e) =>
-            {
-                if (!Application.Current.Dispatcher.HasShutdownStarted)
-                {
-                    Application.Current.Dispatcher.Invoke(() => OnTimerTick(null, null));
-                }
-            };
+            _timer.Tick += OnTimerTick;
             _timer.Start();
         }
 
@@ -148,8 +141,8 @@ namespace AirplaneSimulationTrajectory.ViewModel
             }
 
             _timer.Stop();
-            _timer.Elapsed -= OnTimerTick;
-            _timer.Dispose();
+            _timer.Tick -= OnTimerTick;
+            _timer = null;
         }
 
         private void OnUIThreadTimerTick()
@@ -161,31 +154,55 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
             try
             {
-                var (planeTransform, secondPosition, resetTimer) = _aircraftService.UpdateInterpolatePosition(); 
+                var (planeTransform, secondPosition, resetTimer) = _aircraftService.UpdatePosition();
 
                 if (resetTimer)
                 {
                     StopTimer();
+
+                    if (TubePathPoints.Any())
+                    {
+                        TubePathPoints.Clear();
+                    }
+
                     FlightInfoViewModel.ClearFields();
                     return;
                 }
 
                 Aircraft.Transform = planeTransform;
-                MainViewport3D.InvalidateVisual();
 
                 // Set the new position of the airplane
                 _aircraftService.AircraftPosition = secondPosition;
 
                 CoordinatesConverter.Point3DToCoordinates(
                     CoordinatesConverter.Vector3DToPoint3D(secondPosition),
-                    out _latitude, out _longitude);
-                FlightInfoViewModel.UpdateData(_latitude, _longitude);
+                    out var latitude, out var longitude);
+                FlightInfoViewModel.UpdateData(latitude, longitude);
+
+                _counter++;
+
+                if (_counter == AppConstants.PointBuildDelta)
+                {
+                    AddTubePathPoint(_aircraftService.NormalizePoint(new RoutePointModel(latitude, longitude,
+                        AppConstants.RadiusDelta + AppConstants.EarthRadius).Point3D));
+                    _routeVisualization.Build(TubePathPoints);
+                    _counter = 0;
+                }
+
+                MainViewport3D.InvalidateVisual();
             }
             catch (Exception e)
             {
+                _counter = 0;
                 MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 Debug.WriteLine(e);
             }
+        }
+
+        public void AddTubePathPoint(Point3D point)
+        {
+            var updatedCollection = new Point3DCollection(_tubePathPoints) { point };
+            SetField(ref _tubePathPoints, updatedCollection, nameof(TubePathPoints));
         }
 
         private void OnTimerTick(object sender, EventArgs e)

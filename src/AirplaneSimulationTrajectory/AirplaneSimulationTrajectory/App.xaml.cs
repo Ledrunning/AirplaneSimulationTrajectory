@@ -29,7 +29,7 @@ namespace AirplaneSimulationTrajectory
                 // Register services and types
 
                 _container.Register(() =>
-                    new RouteVisualization(0.02, 10, Colors.Red, 1.0), Lifestyle.Singleton);
+                    new RouteVisualization(0.015, 10, Colors.Red, 1.0), Lifestyle.Singleton);
 
                 _container.Register<IAircraftService, AircraftService>(Lifestyle.Singleton);
                 _container.Register<IFlightInfoViewModel, FlightInfoViewModel>(Lifestyle.Singleton);

@@ -48,6 +48,8 @@ namespace AirplaneSimulationTrajectory.ViewModel
             set => SetField(ref _coordinates, value);
         }
 
+        //TODO Need to add some external settings file for
+        //FlightLength and TotalFlightTime
         public void InitializeData()
         {
             CurrentTime = null;
