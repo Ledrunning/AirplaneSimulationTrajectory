@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Media;
 using AirplaneSimulationTrajectory.ViewModel;
 
 namespace AirplaneSimulationTrajectory.View

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using AirplaneSimulationTrajectory.Constants;
 using AirplaneSimulationTrajectory.Helpers;
 
 namespace AirplaneSimulationTrajectory.Model
 {
+    [Obsolete("Maybe I will make a decision to delete this class")]
     public static class TrajectoryData
     {
         public static CustomLinkedList<RoutePointModel> GetRoute()

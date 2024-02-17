@@ -2,8 +2,6 @@
 using System.Windows.Media.Media3D;
 using AirplaneSimulationTrajectory.Constants;
 using AirplaneSimulationTrajectory.Contracts;
-using AirplaneSimulationTrajectory.Helpers;
-using AirplaneSimulationTrajectory.Model;
 
 namespace AirplaneSimulationTrajectory.Services
 {
@@ -40,10 +38,10 @@ namespace AirplaneSimulationTrajectory.Services
 
             // Apply transform
             var planeTransform = GetPlaneTransform(forward, up, firstPosition * (1 + AppConstants.HeightOverGround));
-            
+
             return (planeTransform, secondPosition, false);
         }
-        
+
         public Vector3D MovementCalculation(DateTime now, DateTime juneSolstice)
         {
             var declination = 23.45 * Math.Cos((now.DayOfYear - juneSolstice.DayOfYear) / 365.25 * 2 * Math.PI);
@@ -52,32 +50,12 @@ namespace AirplaneSimulationTrajectory.Services
             return -new Vector3D(Math.Cos(phi) * Math.Cos(theta), Math.Sin(phi) * Math.Cos(theta), Math.Sin(theta));
         }
 
-        public RoutePointModel AddRoutePoints(double latitude, double longitude)
-        {
-            return new RoutePointModel(latitude, longitude, AppConstants.RadiusDelta + AppConstants.EarthRadius);
-        }
-
-        public Point3DCollection AddTubeRoutePoints()
-        {
-            throw new NotImplementedException();
-        }
-
         public Point3D NormalizePoint(Point3D point)
         {
             var length = Math.Sqrt(point.X * point.X + point.Y * point.Y + point.Z * point.Z);
-            return new Point3D(AppConstants.EarthFlightRadius * point.X / length, AppConstants.EarthFlightRadius * point.Y / length,
+            return new Point3D(AppConstants.EarthFlightRadius * point.X / length,
+                AppConstants.EarthFlightRadius * point.Y / length,
                 AppConstants.EarthFlightRadius * point.Z / length);
-        }
-        
-        public Point3DCollection AddTubeRoutePoints(CustomLinkedList<RoutePointModel> points)
-        {
-            var tubePoints = new Point3DCollection();
-            foreach (var point in points)
-            {
-                tubePoints.Add(NormalizePoint(point.Point3D));
-            }
-
-            return tubePoints;
         }
 
         private static Vector3D Normalized(Vector3D vector)

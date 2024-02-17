@@ -1,6 +1,4 @@
-﻿using AirplaneSimulationTrajectory.Helpers;
-using AirplaneSimulationTrajectory.Model;
-using System;
+﻿using System;
 using System.Windows.Media.Media3D;
 
 namespace AirplaneSimulationTrajectory.Contracts
@@ -11,8 +9,6 @@ namespace AirplaneSimulationTrajectory.Contracts
         void SetPlanePath(Vector3D from, Vector3D to);
         (Transform3D planeTransform, Vector3D secondPosition, bool resetTimer) UpdatePosition();
         Vector3D MovementCalculation(DateTime now, DateTime juneSolstice);
-        Point3DCollection AddTubeRoutePoints(CustomLinkedList<RoutePointModel> points);
-        Point3DCollection AddTubeRoutePoints();
         Point3D NormalizePoint(Point3D point);
     }
 }

@@ -29,7 +29,5 @@ namespace AirplaneSimulationTrajectory.Model
             Point3D = point;
             CoordinatesConverter.Point3DToCoordinates(Point3D, out Latitude, out Longitude);
         }
-
-        public bool IsCurrent { get; set; } = false;
     }
 }

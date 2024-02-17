@@ -84,7 +84,6 @@
     </ApplicationDefinition>
     <Compile Include="Contracts\IAircraftService.cs" />
     <Compile Include="Contracts\IFlightInfoViewModel.cs" />
-    <Compile Include="Converters\DebugConverter.cs" />
     <Compile Include="Helpers\CustomLinkedList.cs" />
     <Compile Include="Helpers\FileModelVisual3DAttachedProperties.cs" />
     <Compile Include="Helpers\HelixViewport3DAttachedProperties.cs" />
