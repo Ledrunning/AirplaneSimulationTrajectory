@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<settings>
+  <timerSpeedMs>100</timerSpeedMs>
+
+  <routeCoordinates>
+    <startPointLat>45.046</startPointLat>
+    <startPointLon>7.728</startPointLon>
+    <endPointLat>68.608</endPointLat>
+    <endPointLon>140.061</endPointLon>
+  </routeCoordinates>
+
+  <tubeConfiguration>
+    <diametr>0.02</diametr>
+    <thetaDiv>10</thetaDiv>
+    <opacity>1.0</opacity>
+    <color>#94f2d3</color>
+  </tubeConfiguration>
+  <flightInformation>
+    <flightLength>5400</flightLength>
+    <totalFlightTime>15</totalFlightTime>
+  </flightInformation>
+</settings>

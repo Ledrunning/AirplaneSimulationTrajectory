@@ -27,9 +27,15 @@ namespace AirplaneSimulationTrajectory
                 _container = new Container();
 
                 // Register services and types
-
+                //TODO - put value from settings!
+                Color tubeColor;
+                var colorValue=string.Empty;
+                (string.IsNullOrWhiteSpace(colorValue)
+                    ? tubeColor = (Color)ColorConverter.ConvertFromString(colorValue)
+                    : tubeColor = Colors.Red;
+                
                 _container.Register(() =>
-                    new RouteVisualization(0.015, 10, Colors.Red, 1.0), Lifestyle.Singleton);
+                    new RouteVisualization(0.015, 10, tubeColor, 1.0), Lifestyle.Singleton);
 
                 _container.Register<IAircraftService, AircraftService>(Lifestyle.Singleton);
                 _container.Register<IFlightInfoViewModel, FlightInfoViewModel>(Lifestyle.Singleton);
