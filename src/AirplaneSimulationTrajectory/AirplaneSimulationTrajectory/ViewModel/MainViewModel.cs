@@ -13,6 +13,7 @@ using AirplaneSimulationTrajectory.Helpers;
 using AirplaneSimulationTrajectory.Model;
 using AirplaneSimulationTrajectory.Services;
 using AirplaneSimulationTrajectory.ViewModel.Command;
+using CommonConfiguration.Configuration.Model;
 using HelixToolkit.Wpf;
 
 namespace AirplaneSimulationTrajectory.ViewModel
@@ -20,6 +21,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
     public class MainViewModel : BaseViewModel
     {
         private readonly IAircraftService _aircraftService;
+        private readonly Settings _settings;
         private readonly CustomLinkedList<RoutePointModel> _flightCoordinates;
         private FileModelVisual3D _aircraft;
 
@@ -38,10 +40,12 @@ namespace AirplaneSimulationTrajectory.ViewModel
             IFlightInfoViewModel flightInfoViewModel,
             HelixViewport3D helixViewport3D,
             FileModelVisual3D fileModelVisual3D,
-            RouteVisualization routeVisualization)
+            RouteVisualization routeVisualization,
+            Settings settings)
         {
             _flightCoordinates = TrajectoryData.GetRoute();
             _aircraftService = aircraftService;
+            _settings = settings;
             FlightInfoViewModel = flightInfoViewModel;
             //Clouds = MaterialHelper.CreateImageMaterial("pack://application:,,,/Images/clouds.jpg", 0.5);
 

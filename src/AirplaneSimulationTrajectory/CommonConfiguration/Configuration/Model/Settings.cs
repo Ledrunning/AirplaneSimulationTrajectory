@@ -98,17 +98,17 @@ namespace CommonConfiguration.Configuration.Model
     {
         private string _colorField;
 
-        private decimal _diametrField;
+        private decimal _diameterField;
 
         private decimal _opacityField;
 
         private byte _thetaDivField;
 
         /// <remarks />
-        public decimal Diametr
+        public decimal Diameter
         {
-            get => _diametrField;
-            set => _diametrField = value;
+            get => _diameterField;
+            set => _diameterField = value;
         }
 
         /// <remarks />
