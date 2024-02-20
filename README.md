@@ -8,6 +8,8 @@
 
 ## UI layout
 
+ ![](flight.gif)
+
  ![](aircraft2.gif)
 
 ## Features
