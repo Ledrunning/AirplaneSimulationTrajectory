@@ -162,9 +162,9 @@
     <Resource Include="Images\TimeZones2008.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="configuration.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
+    <None Include="configuration.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="View\airplane.png" />

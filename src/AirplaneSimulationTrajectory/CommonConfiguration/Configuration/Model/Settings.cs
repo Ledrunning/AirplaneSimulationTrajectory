@@ -12,28 +12,28 @@ namespace CommonConfiguration.Configuration.Model
     {
         private SettingsFlightInformation _flightInformationField;
 
-        private SettingsRouteCoordinates _routeCoordinatesField;
+        private RouteCoordinates _routeCoordinatesField;
 
-        private byte _timerSpeedMsField;
+        private int _timerSpeedMsField;
 
-        private SettingsTubeConfiguration _tubeConfigurationField;
+        private TubeConfiguration _tubeConfigurationField;
 
-        /// <remarks />
-        public byte TimerSpeedMs
+        [XmlElement("timerSpeedMs")]
+        public int TimerSpeedMs
         {
             get => _timerSpeedMsField;
             set => _timerSpeedMsField = value;
         }
 
         /// <remarks />
-        public SettingsRouteCoordinates RouteCoordinates
+        public RouteCoordinates RouteCoordinates
         {
             get => _routeCoordinatesField;
             set => _routeCoordinatesField = value;
         }
 
         /// <remarks />
-        public SettingsTubeConfiguration TubeConfiguration
+        public TubeConfiguration TubeConfiguration
         {
             get => _tubeConfigurationField;
             set => _tubeConfigurationField = value;
@@ -51,81 +51,77 @@ namespace CommonConfiguration.Configuration.Model
     [Serializable]
     [DesignerCategory("code")]
     [XmlType(AnonymousType = true)]
-    public class SettingsRouteCoordinates
+    public class RouteCoordinates
     {
-        private decimal _endPointLatField;
+        private double _endPointLatField;
+        private double _endPointLonField;
+        private double _startPointLatField;
+        private double _startPointLonField;
 
-        private decimal _endPointLonField;
-
-        private decimal _startPointLatField;
-
-        private decimal _startPointLonField;
-
-        /// <remarks />
-        public decimal StartPointLat
+        [XmlElement("startPointLat")]
+        public double StartPointLat
         {
             get => _startPointLatField;
             set => _startPointLatField = value;
         }
 
-        /// <remarks />
-        public decimal StartPointLon
+        [XmlElement("startPointLon")]
+        public double StartPointLon
         {
             get => _startPointLonField;
             set => _startPointLonField = value;
         }
 
-        /// <remarks />
-        public decimal EndPointLat
+        [XmlElement("endPointLat")]
+        public double EndPointLat
         {
             get => _endPointLatField;
             set => _endPointLatField = value;
         }
 
-        /// <remarks />
-        public decimal EndPointLon
+        [XmlElement("endPointLon")]
+        public double EndPointLon
         {
             get => _endPointLonField;
             set => _endPointLonField = value;
         }
     }
 
-    /// <remarks />
     [Serializable]
     [DesignerCategory("code")]
     [XmlType(AnonymousType = true)]
-    public class SettingsTubeConfiguration
+    public class TubeConfiguration
     {
         private string _colorField;
 
-        private decimal _diameterField;
+        private double _diameterField;
 
-        private decimal _opacityField;
+        private double _opacityField;
 
-        private byte _thetaDivField;
+        private int _thetaDivField;
 
-        /// <remarks />
-        public decimal Diameter
+        [XmlElement("diameter")]
+        public double Diameter
         {
             get => _diameterField;
             set => _diameterField = value;
         }
 
-        /// <remarks />
-        public byte ThetaDiv
+        [XmlElement("thetaDiv")]
+        public int ThetaDiv
         {
             get => _thetaDivField;
             set => _thetaDivField = value;
         }
 
-        /// <remarks />
-        public decimal Opacity
+        [XmlElement("opacity")]
+        public double Opacity
         {
             get => _opacityField;
             set => _opacityField = value;
         }
 
-        /// <remarks />
+        [XmlElement("color")]
         public string Color
         {
             get => _colorField;
@@ -139,19 +135,19 @@ namespace CommonConfiguration.Configuration.Model
     [XmlType(AnonymousType = true)]
     public class SettingsFlightInformation
     {
-        private ushort _flightLengthField;
+        private int _flightLengthField;
 
-        private byte _totalFlightTimeField;
+        private int _totalFlightTimeField;
 
-        /// <remarks />
-        public ushort FlightLength
+        [XmlElement("flightLength")]
+        public int FlightLength
         {
             get => _flightLengthField;
             set => _flightLengthField = value;
         }
 
-        /// <remarks />
-        public byte TotalFlightTime
+        [XmlElement("tlightLength")]
+        public int TotalFlightTime
         {
             get => _totalFlightTimeField;
             set => _totalFlightTimeField = value;
