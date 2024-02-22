@@ -10,7 +10,7 @@
   </routeCoordinates>
 
   <tubeConfiguration>
-    <diametr>0.02</diametr>
+    <diameter>0.02</diameter>
     <thetaDiv>10</thetaDiv>
     <opacity>1.0</opacity>
     <color>#94f2d3</color>

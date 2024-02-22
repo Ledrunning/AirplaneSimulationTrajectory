@@ -21,8 +21,8 @@ namespace AirplaneSimulationTrajectory.ViewModel
     public class MainViewModel : BaseViewModel
     {
         private readonly IAircraftService _aircraftService;
-        private readonly Settings _settings;
         private readonly CustomLinkedList<RoutePointModel> _flightCoordinates;
+        private readonly Settings _settings;
         private FileModelVisual3D _aircraft;
 
         private Material _clouds;
@@ -101,9 +101,12 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
         private void SetAircraftPath()
         {
-            var start = _flightCoordinates.First().Point3D;
-            var end = _flightCoordinates.Last().Point3D;
-            _aircraftService.SetPlanePath(new Vector3D(start.X, start.Y, start.Z), new Vector3D(end.X, end.Y, end.Z));
+            var start = new RoutePointModel(_settings.RouteCoordinates.StartPointLat,
+                _settings.RouteCoordinates.StartPointLon);
+            var end = new RoutePointModel(_settings.RouteCoordinates.EndPointLat,
+                _settings.RouteCoordinates.EndPointLon);
+            _aircraftService.SetPlanePath(new Vector3D(start.Point3D.X, start.Point3D.Y, start.Point3D.Z),
+                new Vector3D(end.Point3D.X, end.Point3D.Y, end.Point3D.Z));
         }
 
         private void InitializeAircraftPosition()

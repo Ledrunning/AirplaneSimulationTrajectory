@@ -1,156 +1,58 @@
-﻿using System;
-using System.ComponentModel;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 namespace CommonConfiguration.Configuration.Model
 {
-    [Serializable]
-    [DesignerCategory("code")]
-    [XmlType(AnonymousType = true)]
+    [XmlRoot(ElementName = "routeCoordinates")]
+    public class RouteCoordinates
+    {
+        [XmlElement(ElementName = "startPointLat")]
+        public double StartPointLat { get; set; }
+
+        [XmlElement(ElementName = "startPointLon")]
+        public double StartPointLon { get; set; }
+
+        [XmlElement(ElementName = "endPointLat")]
+        public double EndPointLat { get; set; }
+
+        [XmlElement(ElementName = "endPointLon")]
+        public double EndPointLon { get; set; }
+    }
+
+    [XmlRoot(ElementName = "tubeConfiguration")]
+    public class TubeConfiguration
+    {
+        [XmlElement(ElementName = "diameter")] public double Diameter { get; set; }
+
+        [XmlElement(ElementName = "thetaDiv")] public int ThetaDiv { get; set; }
+
+        [XmlElement(ElementName = "opacity")] public double Opacity { get; set; }
+
+        [XmlElement(ElementName = "color")] public string Color { get; set; }
+    }
+
+    [XmlRoot(ElementName = "flightInformation")]
+    public class FlightInformation
+    {
+        [XmlElement(ElementName = "flightLength")]
+        public int FlightLength { get; set; }
+
+        [XmlElement(ElementName = "totalFlightTime")]
+        public int TotalFlightTime { get; set; }
+    }
+
     [XmlRoot(ElementName = "settings")]
     public class Settings
     {
-        private SettingsFlightInformation _flightInformationField;
+        [XmlElement(ElementName = "timerSpeedMs")]
+        public int TimerSpeedMs { get; set; }
 
-        private RouteCoordinates _routeCoordinatesField;
+        [XmlElement(ElementName = "routeCoordinates")]
+        public RouteCoordinates RouteCoordinates { get; set; }
 
-        private int _timerSpeedMsField;
+        [XmlElement(ElementName = "tubeConfiguration")]
+        public TubeConfiguration TubeConfiguration { get; set; }
 
-        private TubeConfiguration _tubeConfigurationField;
-
-        [XmlElement("timerSpeedMs")]
-        public int TimerSpeedMs
-        {
-            get => _timerSpeedMsField;
-            set => _timerSpeedMsField = value;
-        }
-
-        /// <remarks />
-        public RouteCoordinates RouteCoordinates
-        {
-            get => _routeCoordinatesField;
-            set => _routeCoordinatesField = value;
-        }
-
-        /// <remarks />
-        public TubeConfiguration TubeConfiguration
-        {
-            get => _tubeConfigurationField;
-            set => _tubeConfigurationField = value;
-        }
-
-        /// <remarks />
-        public SettingsFlightInformation FlightInformation
-        {
-            get => _flightInformationField;
-            set => _flightInformationField = value;
-        }
-    }
-
-    /// <remarks />
-    [Serializable]
-    [DesignerCategory("code")]
-    [XmlType(AnonymousType = true)]
-    public class RouteCoordinates
-    {
-        private double _endPointLatField;
-        private double _endPointLonField;
-        private double _startPointLatField;
-        private double _startPointLonField;
-
-        [XmlElement("startPointLat")]
-        public double StartPointLat
-        {
-            get => _startPointLatField;
-            set => _startPointLatField = value;
-        }
-
-        [XmlElement("startPointLon")]
-        public double StartPointLon
-        {
-            get => _startPointLonField;
-            set => _startPointLonField = value;
-        }
-
-        [XmlElement("endPointLat")]
-        public double EndPointLat
-        {
-            get => _endPointLatField;
-            set => _endPointLatField = value;
-        }
-
-        [XmlElement("endPointLon")]
-        public double EndPointLon
-        {
-            get => _endPointLonField;
-            set => _endPointLonField = value;
-        }
-    }
-
-    [Serializable]
-    [DesignerCategory("code")]
-    [XmlType(AnonymousType = true)]
-    public class TubeConfiguration
-    {
-        private string _colorField;
-
-        private double _diameterField;
-
-        private double _opacityField;
-
-        private int _thetaDivField;
-
-        [XmlElement("diameter")]
-        public double Diameter
-        {
-            get => _diameterField;
-            set => _diameterField = value;
-        }
-
-        [XmlElement("thetaDiv")]
-        public int ThetaDiv
-        {
-            get => _thetaDivField;
-            set => _thetaDivField = value;
-        }
-
-        [XmlElement("opacity")]
-        public double Opacity
-        {
-            get => _opacityField;
-            set => _opacityField = value;
-        }
-
-        [XmlElement("color")]
-        public string Color
-        {
-            get => _colorField;
-            set => _colorField = value;
-        }
-    }
-
-    /// <remarks />
-    [Serializable]
-    [DesignerCategory("code")]
-    [XmlType(AnonymousType = true)]
-    public class SettingsFlightInformation
-    {
-        private int _flightLengthField;
-
-        private int _totalFlightTimeField;
-
-        [XmlElement("flightLength")]
-        public int FlightLength
-        {
-            get => _flightLengthField;
-            set => _flightLengthField = value;
-        }
-
-        [XmlElement("tlightLength")]
-        public int TotalFlightTime
-        {
-            get => _totalFlightTimeField;
-            set => _totalFlightTimeField = value;
-        }
+        [XmlElement(ElementName = "flightInformation")]
+        public FlightInformation FlightInformation { get; set; }
     }
 }
