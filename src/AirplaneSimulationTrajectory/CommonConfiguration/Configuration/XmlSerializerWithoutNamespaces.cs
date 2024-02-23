@@ -41,10 +41,10 @@ namespace CommonConfiguration.Configuration
             var serializer = new XmlSerializer(typeof(T));
             using (var reader = XmlReader.Create(filePath))
             {
-                return (T) serializer.Deserialize(reader);
+                return (T)serializer.Deserialize(reader);
             }
         }
-        
+
         public static T Deserialize<T>(string xmlData)
             where T : new()
         {
@@ -52,7 +52,7 @@ namespace CommonConfiguration.Configuration
 
             using (TextReader reader = new StringReader(xmlData))
             {
-                return (T) serializer.Deserialize(reader);
+                return (T)serializer.Deserialize(reader);
             }
         }
 
@@ -61,7 +61,7 @@ namespace CommonConfiguration.Configuration
             using (var stream = new StreamReader(filePath))
             {
                 var serializer = new XmlSerializer(typeof(T));
-                var data = (T) serializer.Deserialize(stream);
+                var data = (T)serializer.Deserialize(stream);
                 return data;
             }
         }

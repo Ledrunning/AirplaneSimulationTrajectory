@@ -9,7 +9,6 @@ using System.Windows.Threading;
 using AirplaneSimulationTrajectory.Constants;
 using AirplaneSimulationTrajectory.Contracts;
 using AirplaneSimulationTrajectory.Converters;
-using AirplaneSimulationTrajectory.Helpers;
 using AirplaneSimulationTrajectory.Model;
 using AirplaneSimulationTrajectory.Services;
 using AirplaneSimulationTrajectory.ViewModel.Command;
@@ -21,7 +20,6 @@ namespace AirplaneSimulationTrajectory.ViewModel
     public class MainViewModel : BaseViewModel
     {
         private readonly IAircraftService _aircraftService;
-        private readonly CustomLinkedList<RoutePointModel> _flightCoordinates;
         private readonly Settings _settings;
         private FileModelVisual3D _aircraft;
 
@@ -43,7 +41,6 @@ namespace AirplaneSimulationTrajectory.ViewModel
             RouteVisualization routeVisualization,
             Settings settings)
         {
-            _flightCoordinates = TrajectoryData.GetRoute();
             _aircraftService = aircraftService;
             _settings = settings;
             FlightInfoViewModel = flightInfoViewModel;
@@ -131,10 +128,9 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
         private void InitializeTimer()
         {
-            // create timer for updating every 100 ms
             _timer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromMilliseconds(100)
+                Interval = TimeSpan.FromMilliseconds(_settings.TimerSpeedMs)
             };
             _timer.Tick += OnTimerTick;
             _timer.Start();

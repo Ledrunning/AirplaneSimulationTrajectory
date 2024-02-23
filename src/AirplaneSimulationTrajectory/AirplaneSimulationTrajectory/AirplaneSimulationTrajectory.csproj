@@ -84,10 +84,8 @@
     </ApplicationDefinition>
     <Compile Include="Contracts\IAircraftService.cs" />
     <Compile Include="Contracts\IFlightInfoViewModel.cs" />
-    <Compile Include="Helpers\CustomLinkedList.cs" />
     <Compile Include="Helpers\FileModelVisual3DAttachedProperties.cs" />
     <Compile Include="Helpers\HelixViewport3DAttachedProperties.cs" />
-    <Compile Include="Model\TrajectoryData.cs" />
     <Compile Include="Services\AircraftService.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\Command\RelayCommand.cs" />

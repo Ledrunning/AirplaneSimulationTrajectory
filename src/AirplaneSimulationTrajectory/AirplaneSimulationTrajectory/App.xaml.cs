@@ -7,7 +7,6 @@ using AirplaneSimulationTrajectory.Services;
 using AirplaneSimulationTrajectory.View;
 using AirplaneSimulationTrajectory.ViewModel;
 using CommonConfiguration;
-using CommonConfiguration.Configuration.Model;
 using HelixToolkit.Wpf;
 using SimpleInjector;
 
@@ -28,35 +27,45 @@ namespace AirplaneSimulationTrajectory
 
                 _container = new Container();
 
-                _container.Register<Settings>(Lifestyle.Singleton);
-
+                // Register settings and main configuration
                 var mainConfiguration = new MainConfiguration();
-                var settings = mainConfiguration.GetSettings();
+                _container.RegisterInstance(mainConfiguration);
 
-                _container.Register<MainConfiguration>(Lifestyle.Singleton);
+                // Register RouteVisualization instance
+                var settings = mainConfiguration.GetSettings();
+                var colorFromString = string.IsNullOrWhiteSpace(settings.TubeConfiguration.Color)
+                    ? Colors.Red
+                    : (Color)ColorConverter.ConvertFromString(settings.TubeConfiguration.Color);
+                var routeVisualization =
+                    new RouteVisualization(settings.TubeConfiguration.Diameter, 10, colorFromString, 1.0);
+                _container.RegisterInstance(routeVisualization);
 
                 // Register services and types
-                var colorFromString = (string.IsNullOrWhiteSpace(settings.TubeConfiguration.Color)
-                    ? (Color)ColorConverter.ConvertFromString(settings.TubeConfiguration.Color)
-                    : Colors.Red);
+                _container.RegisterSingleton<IAircraftService, AircraftService>();
+                _container.RegisterSingleton<IFlightInfoViewModel, FlightInfoViewModel>();
+                _container.RegisterSingleton<HelixViewport3D>();
+                _container.RegisterSingleton<FileModelVisual3D>();
 
-                _container.Register(() =>
-                    new RouteVisualization(settings.TubeConfiguration.Diameter, 10, colorFromString, 1.0), Lifestyle.Singleton);
-
-                _container.Register<IAircraftService, AircraftService>(Lifestyle.Singleton);
-                _container.Register<IFlightInfoViewModel, FlightInfoViewModel>(Lifestyle.Singleton);
-                _container.Register<HelixViewport3D>(Lifestyle.Singleton);
-                _container.Register<FileModelVisual3D>(Lifestyle.Singleton);
-                _container.Register<MainViewModel>(Lifestyle.Singleton);
-                _container.Register<MainWindow>(Lifestyle.Singleton);
-
-                // RegisterInitializer to set MainViewModel in MainWindow
-                _container.RegisterInitializer<MainWindow>(mainWindow =>
+                // Register MainViewModel with dependencies
+                _container.RegisterSingleton(() =>
                 {
-                    var mainViewModel = _container.GetInstance<MainViewModel>();
-                    mainWindow.Initialize(mainViewModel);
-                    mainWindow.Show();
+                    var aircraftService = _container.GetInstance<IAircraftService>();
+                    var flightInfoViewModel = _container.GetInstance<IFlightInfoViewModel>();
+                    var helixViewport3D = _container.GetInstance<HelixViewport3D>();
+                    var fileModelVisual3D = _container.GetInstance<FileModelVisual3D>();
+
+                    return new MainViewModel(aircraftService, flightInfoViewModel, helixViewport3D, fileModelVisual3D,
+                        routeVisualization, settings);
                 });
+
+                // Register MainWindow
+                _container.RegisterSingleton<MainWindow>();
+
+                // Initialize and show MainWindow
+                var mainWindow = _container.GetInstance<MainWindow>();
+                var mainViewModel = _container.GetInstance<MainViewModel>();
+                mainWindow.Initialize(mainViewModel);
+                mainWindow.Show();
 
                 // Verify the container's configuration
                 _container.Verify();

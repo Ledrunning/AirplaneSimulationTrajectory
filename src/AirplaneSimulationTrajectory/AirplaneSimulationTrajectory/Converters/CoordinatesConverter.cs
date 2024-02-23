@@ -32,9 +32,8 @@ namespace AirplaneSimulationTrajectory.Converters
             {
                 lon += 360;
             }
-
-            var a = Math.Sqrt(pt.X * pt.X + pt.Y * pt.Y);
-            lat = Math.Atan2(pt.Z, a) * 180 / Math.PI;
+            
+            lat = Math.Atan2(pt.Z, Math.Sqrt(pt.X * pt.X + pt.Y * pt.Y)) * 180 / Math.PI;
         }
     }
 }
