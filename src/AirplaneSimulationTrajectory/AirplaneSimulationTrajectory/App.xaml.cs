@@ -6,6 +6,7 @@ using AirplaneSimulationTrajectory.Contracts;
 using AirplaneSimulationTrajectory.Services;
 using AirplaneSimulationTrajectory.View;
 using AirplaneSimulationTrajectory.ViewModel;
+using CommonConfiguration;
 using HelixToolkit.Wpf;
 using SimpleInjector;
 
@@ -26,25 +27,47 @@ namespace AirplaneSimulationTrajectory
 
                 _container = new Container();
 
+                // Register settings and main configuration
+                var mainConfiguration = new MainConfiguration();
+                _container.RegisterInstance(mainConfiguration);
+
+                // Register RouteVisualization instance
+                var settings = mainConfiguration.GetSettings();
+                var colorFromString = string.IsNullOrWhiteSpace(settings.TubeConfiguration.Color)
+                    ? Colors.Red
+                    : (Color)ColorConverter.ConvertFromString(settings.TubeConfiguration.Color);
+                var routeVisualization =
+                    new RouteVisualization(settings.TubeConfiguration.Diameter, settings.TubeConfiguration.ThetaDiv,
+                        colorFromString, settings.TubeConfiguration.Opacity);
+                _container.RegisterInstance(routeVisualization);
+
                 // Register services and types
+                _container.RegisterSingleton<IAircraftService, AircraftService>();
+                _container.RegisterSingleton<HelixViewport3D>();
+                _container.RegisterSingleton<FileModelVisual3D>();
 
-                _container.Register(() =>
-                    new RouteVisualization(0.015, 10, Colors.Red, 1.0), Lifestyle.Singleton);
+                _container.Register<IFlightInfoViewModel>(() => new FlightInfoViewModel(settings), Lifestyle.Singleton);
 
-                _container.Register<IAircraftService, AircraftService>(Lifestyle.Singleton);
-                _container.Register<IFlightInfoViewModel, FlightInfoViewModel>(Lifestyle.Singleton);
-                _container.Register<HelixViewport3D>(Lifestyle.Singleton);
-                _container.Register<FileModelVisual3D>(Lifestyle.Singleton);
-                _container.Register<MainViewModel>(Lifestyle.Singleton);
-                _container.Register<MainWindow>(Lifestyle.Singleton);
-
-                // RegisterInitializer to set MainViewModel in MainWindow
-                _container.RegisterInitializer<MainWindow>(mainWindow =>
+                // Register MainViewModel with dependencies
+                _container.RegisterSingleton(() =>
                 {
-                    var mainViewModel = _container.GetInstance<MainViewModel>();
-                    mainWindow.Initialize(mainViewModel);
-                    mainWindow.Show();
+                    var aircraftService = _container.GetInstance<IAircraftService>();
+                    var flightInfoViewModel = _container.GetInstance<IFlightInfoViewModel>();
+                    var helixViewport3D = _container.GetInstance<HelixViewport3D>();
+                    var fileModelVisual3D = _container.GetInstance<FileModelVisual3D>();
+
+                    return new MainViewModel(aircraftService, flightInfoViewModel, helixViewport3D, fileModelVisual3D,
+                        routeVisualization, settings);
                 });
+
+                // Register MainWindow
+                _container.RegisterSingleton<MainWindow>();
+
+                // Initialize and show MainWindow
+                var mainWindow = _container.GetInstance<MainWindow>();
+                var mainViewModel = _container.GetInstance<MainViewModel>();
+                mainWindow.Initialize(mainViewModel);
+                mainWindow.Show();
 
                 // Verify the container's configuration
                 _container.Verify();

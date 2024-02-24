@@ -84,10 +84,8 @@
     </ApplicationDefinition>
     <Compile Include="Contracts\IAircraftService.cs" />
     <Compile Include="Contracts\IFlightInfoViewModel.cs" />
-    <Compile Include="Helpers\CustomLinkedList.cs" />
     <Compile Include="Helpers\FileModelVisual3DAttachedProperties.cs" />
     <Compile Include="Helpers\HelixViewport3DAttachedProperties.cs" />
-    <Compile Include="Model\TrajectoryData.cs" />
     <Compile Include="Services\AircraftService.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\Command\RelayCommand.cs" />
@@ -161,12 +159,22 @@
     <Resource Include="Images\EarthAtNight.png" />
     <Resource Include="Images\TimeZones2008.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="configuration.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="View\airplane.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icon\airplane.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommonConfiguration\CommonConfiguration.csproj">
+      <Project>{9b44a301-0bec-4ac1-9937-5756f1f3c507}</Project>
+      <Name>CommonConfiguration</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets" Condition="Exists('..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" />

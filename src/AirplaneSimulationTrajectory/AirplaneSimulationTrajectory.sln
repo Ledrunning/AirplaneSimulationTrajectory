@@ -5,6 +5,8 @@ VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirplaneSimulationTrajectory", "AirplaneSimulationTrajectory\AirplaneSimulationTrajectory.csproj", "{95E53753-6D4D-4059-8F79-100563D994C4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonConfiguration", "CommonConfiguration\CommonConfiguration.csproj", "{9B44A301-0BEC-4AC1-9937-5756F1F3C507}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{95E53753-6D4D-4059-8F79-100563D994C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95E53753-6D4D-4059-8F79-100563D994C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95E53753-6D4D-4059-8F79-100563D994C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B44A301-0BEC-4AC1-9937-5756F1F3C507}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B44A301-0BEC-4AC1-9937-5756F1F3C507}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B44A301-0BEC-4AC1-9937-5756F1F3C507}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B44A301-0BEC-4AC1-9937-5756F1F3C507}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

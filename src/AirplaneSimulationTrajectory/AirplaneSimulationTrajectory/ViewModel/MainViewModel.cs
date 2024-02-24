@@ -9,10 +9,10 @@ using System.Windows.Threading;
 using AirplaneSimulationTrajectory.Constants;
 using AirplaneSimulationTrajectory.Contracts;
 using AirplaneSimulationTrajectory.Converters;
-using AirplaneSimulationTrajectory.Helpers;
 using AirplaneSimulationTrajectory.Model;
 using AirplaneSimulationTrajectory.Services;
 using AirplaneSimulationTrajectory.ViewModel.Command;
+using CommonConfiguration.Configuration.Model;
 using HelixToolkit.Wpf;
 
 namespace AirplaneSimulationTrajectory.ViewModel
@@ -20,7 +20,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
     public class MainViewModel : BaseViewModel
     {
         private readonly IAircraftService _aircraftService;
-        private readonly CustomLinkedList<RoutePointModel> _flightCoordinates;
+        private readonly Settings _settings;
         private FileModelVisual3D _aircraft;
 
         private Material _clouds;
@@ -28,6 +28,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
         private HelixViewport3D _mainViewport3D;
 
+        private bool _isCloudsEnabled;
         private RouteVisualization _routeVisualization;
         private Vector3D _sunlightDirection;
         private DispatcherTimer _timer;
@@ -38,21 +39,25 @@ namespace AirplaneSimulationTrajectory.ViewModel
             IFlightInfoViewModel flightInfoViewModel,
             HelixViewport3D helixViewport3D,
             FileModelVisual3D fileModelVisual3D,
-            RouteVisualization routeVisualization)
+            RouteVisualization routeVisualization,
+            Settings settings)
         {
-            _flightCoordinates = TrajectoryData.GetRoute();
             _aircraftService = aircraftService;
+            _settings = settings;
             FlightInfoViewModel = flightInfoViewModel;
-            //Clouds = MaterialHelper.CreateImageMaterial("pack://application:,,,/Images/clouds.jpg", 0.5);
-
             MainViewport3D = helixViewport3D;
             Aircraft = fileModelVisual3D;
-
             RouteVisualization = routeVisualization;
             MainViewport3D.Children.Add(RouteVisualization.Model);
 
             InitializeCommand();
             InitializeAircraftPosition();
+        }
+
+        public bool IsCloudsEnabled
+        {
+            get => _isCloudsEnabled;
+            set => SetField(ref _isCloudsEnabled, value, nameof(IsCloudsEnabled));
         }
 
         public RouteVisualization RouteVisualization
@@ -91,15 +96,19 @@ namespace AirplaneSimulationTrajectory.ViewModel
             set => SetField(ref _tubePathPoints, value, nameof(TubePathPoints));
         }
 
-        public ICommand FlightStart { get; private set; }
+        public ICommand FlightStartCommand { get; private set; }
+        public ICommand SwitchCloudCommand { get; private set; }
 
         public IFlightInfoViewModel FlightInfoViewModel { get; }
 
         private void SetAircraftPath()
         {
-            var start = _flightCoordinates.First().Point3D;
-            var end = _flightCoordinates.Last().Point3D;
-            _aircraftService.SetPlanePath(new Vector3D(start.X, start.Y, start.Z), new Vector3D(end.X, end.Y, end.Z));
+            var start = new RoutePointModel(_settings.RouteCoordinates.StartPointLat,
+                _settings.RouteCoordinates.StartPointLon);
+            var end = new RoutePointModel(_settings.RouteCoordinates.EndPointLat,
+                _settings.RouteCoordinates.EndPointLon);
+            _aircraftService.SetPlanePath(new Vector3D(start.Point3D.X, start.Point3D.Y, start.Point3D.Z),
+                new Vector3D(end.Point3D.X, end.Point3D.Y, end.Point3D.Z));
         }
 
         private void InitializeAircraftPosition()
@@ -124,10 +133,9 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
         private void InitializeTimer()
         {
-            // create timer for updating every 100 ms
             _timer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromMilliseconds(100)
+                Interval = TimeSpan.FromMilliseconds(_settings.TimerSpeedMs)
             };
             _timer.Tick += OnTimerTick;
             _timer.Start();
@@ -212,7 +220,8 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
         private void InitializeCommand()
         {
-            FlightStart = new RelayCommand(StartCommand);
+            FlightStartCommand = new RelayCommand(StartCommand);
+            SwitchCloudCommand = new RelayCommand(SwitchCloud);
         }
 
         public void StartCommand()
@@ -220,6 +229,14 @@ namespace AirplaneSimulationTrajectory.ViewModel
             InitializeAircraftPosition();
             InitializeTimer();
             FlightInfoViewModel.InitializeData();
+        }
+
+        private static bool isOn;
+        public void SwitchCloud()
+        {
+            isOn = !isOn;
+
+            Clouds = isOn ? MaterialHelper.CreateImageMaterial("pack://application:,,,/Images/clouds.jpg", _settings.CloudsOpacity) : null;
         }
     }
 }
