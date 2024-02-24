@@ -28,6 +28,7 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
         private HelixViewport3D _mainViewport3D;
 
+        private bool _isCloudsEnabled;
         private RouteVisualization _routeVisualization;
         private Vector3D _sunlightDirection;
         private DispatcherTimer _timer;
@@ -44,16 +45,19 @@ namespace AirplaneSimulationTrajectory.ViewModel
             _aircraftService = aircraftService;
             _settings = settings;
             FlightInfoViewModel = flightInfoViewModel;
-            //Clouds = MaterialHelper.CreateImageMaterial("pack://application:,,,/Images/clouds.jpg", 0.5);
-
             MainViewport3D = helixViewport3D;
             Aircraft = fileModelVisual3D;
-
             RouteVisualization = routeVisualization;
             MainViewport3D.Children.Add(RouteVisualization.Model);
 
             InitializeCommand();
             InitializeAircraftPosition();
+        }
+
+        public bool IsCloudsEnabled
+        {
+            get => _isCloudsEnabled;
+            set => SetField(ref _isCloudsEnabled, value, nameof(IsCloudsEnabled));
         }
 
         public RouteVisualization RouteVisualization
@@ -92,7 +96,8 @@ namespace AirplaneSimulationTrajectory.ViewModel
             set => SetField(ref _tubePathPoints, value, nameof(TubePathPoints));
         }
 
-        public ICommand FlightStart { get; private set; }
+        public ICommand FlightStartCommand { get; private set; }
+        public ICommand SwitchCloudCommand { get; private set; }
 
         public IFlightInfoViewModel FlightInfoViewModel { get; }
 
@@ -215,7 +220,8 @@ namespace AirplaneSimulationTrajectory.ViewModel
 
         private void InitializeCommand()
         {
-            FlightStart = new RelayCommand(StartCommand);
+            FlightStartCommand = new RelayCommand(StartCommand);
+            SwitchCloudCommand = new RelayCommand(SwitchCloud);
         }
 
         public void StartCommand()
@@ -223,6 +229,14 @@ namespace AirplaneSimulationTrajectory.ViewModel
             InitializeAircraftPosition();
             InitializeTimer();
             FlightInfoViewModel.InitializeData();
+        }
+
+        private static bool isOn;
+        public void SwitchCloud()
+        {
+            isOn = !isOn;
+
+            Clouds = isOn ? MaterialHelper.CreateImageMaterial("pack://application:,,,/Images/clouds.jpg", _settings.CloudsOpacity) : null;
         }
     }
 }

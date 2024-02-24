@@ -1,16 +1,23 @@
 ﻿using AirplaneSimulationTrajectory.Contracts;
 using System;
+using CommonConfiguration.Configuration.Model;
 
 namespace AirplaneSimulationTrajectory.ViewModel
 {
     public class FlightInfoViewModel : BaseViewModel, IFlightInfoViewModel
     {
+        private readonly Settings _settings;
         private string _coordinates;
         private string _currentTime;
         private string _temperature;
         private string _totalFlightTime;
         private string _flightLength;
         private string _title;
+
+        public FlightInfoViewModel(Settings settings)
+        {
+            _settings = settings;
+        }
 
         public string Title
         {
@@ -48,15 +55,13 @@ namespace AirplaneSimulationTrajectory.ViewModel
             set => SetField(ref _coordinates, value);
         }
 
-        //TODO Need to add some external settings file for
-        //FlightLength and TotalFlightTime
         public void InitializeData()
         {
             CurrentTime = null;
             Coordinates = "-/-";
             Temperature = "-/-";
-            FlightLength = "5400";
-            TotalFlightTime = "14h";
+            FlightLength = $"{_settings.FlightInformation.FlightLength} Km";
+            TotalFlightTime = $"{_settings.FlightInformation.TotalFlightTime} h";
         }
 
         private static int NumberGenerator(int firstRangeNumber, int secondRangeNumber)
@@ -71,8 +76,6 @@ namespace AirplaneSimulationTrajectory.ViewModel
             CurrentTime = DateTime.Now.ToShortTimeString();
             Coordinates = $"{latitude:0.00} {longitude:0.00}";
             Temperature = $"{NumberGenerator(-15, -10)}°C";
-            FlightLength = "5400";
-            TotalFlightTime = "14h";
         }
 
         public void ClearFields()

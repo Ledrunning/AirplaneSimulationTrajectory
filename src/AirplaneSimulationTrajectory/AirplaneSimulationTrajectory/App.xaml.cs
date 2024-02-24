@@ -37,14 +37,16 @@ namespace AirplaneSimulationTrajectory
                     ? Colors.Red
                     : (Color)ColorConverter.ConvertFromString(settings.TubeConfiguration.Color);
                 var routeVisualization =
-                    new RouteVisualization(settings.TubeConfiguration.Diameter, 10, colorFromString, 1.0);
+                    new RouteVisualization(settings.TubeConfiguration.Diameter, settings.TubeConfiguration.ThetaDiv,
+                        colorFromString, settings.TubeConfiguration.Opacity);
                 _container.RegisterInstance(routeVisualization);
 
                 // Register services and types
                 _container.RegisterSingleton<IAircraftService, AircraftService>();
-                _container.RegisterSingleton<IFlightInfoViewModel, FlightInfoViewModel>();
                 _container.RegisterSingleton<HelixViewport3D>();
                 _container.RegisterSingleton<FileModelVisual3D>();
+
+                _container.Register<IFlightInfoViewModel>(() => new FlightInfoViewModel(settings), Lifestyle.Singleton);
 
                 // Register MainViewModel with dependencies
                 _container.RegisterSingleton(() =>

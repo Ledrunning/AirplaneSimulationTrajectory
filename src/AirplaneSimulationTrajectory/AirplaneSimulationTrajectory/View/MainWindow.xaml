@@ -112,7 +112,11 @@
         <Button Content="Start" HorizontalAlignment="Left"
                 Margin="10,10,0,0" Grid.Row="1"
                 VerticalAlignment="Top" Width="97"
-                Command="{Binding FlightStart}" />
+                Command="{Binding FlightStartCommand}" />
         <flightInfo:FlightInfoControl Grid.Row="0" DataContext="{Binding FlightInfoViewModel}" Margin="612,0,0,390" />
+        <Button Content="Enable clouds" HorizontalAlignment="Left"
+            Margin="205,10,0,0" Grid.Row="1"
+            VerticalAlignment="Top" Width="97"
+            Command="{Binding SwitchCloudCommand}" />
     </Grid>
 </Window>

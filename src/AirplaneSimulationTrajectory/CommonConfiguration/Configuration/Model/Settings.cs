@@ -46,6 +46,9 @@ namespace CommonConfiguration.Configuration.Model
         [XmlElement(ElementName = "timerSpeedMs")]
         public int TimerSpeedMs { get; set; }
 
+        [XmlElement(ElementName = "cloudsOpacity")]
+        public double CloudsOpacity { get; set; }
+
         [XmlElement(ElementName = "routeCoordinates")]
         public RouteCoordinates RouteCoordinates { get; set; }
 
