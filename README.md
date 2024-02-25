@@ -32,7 +32,7 @@
 Open the solution file (AirplaneSimulationTrajectory.sln) in Visual Studio.
 
 3. **Configuring.** All necessary application settings are in the configuration.xml file.  
-```
+```xml
 <?xml version="1.0" encoding="utf-8" ?>
 <settings>
   <timerSpeedMs>100</timerSpeedMs>
