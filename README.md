@@ -31,7 +31,33 @@
 2. **Open the Solution:**
 Open the solution file (AirplaneSimulationTrajectory.sln) in Visual Studio.
 
-3. **Build and Run:**
+3. **Configuring.** All necessary application settings are in the configuration.xml file.  
+```
+<?xml version="1.0" encoding="utf-8" ?>
+<settings>
+  <timerSpeedMs>100</timerSpeedMs>
+  <cloudsOpacity>0.5</cloudsOpacity>
+  <routeCoordinates>
+    <startPointLat>45.046</startPointLat>
+    <startPointLon>7.728</startPointLon>
+    <endPointLat>68.608</endPointLat>
+    <endPointLon>140.061</endPointLon>
+  </routeCoordinates>
+
+  <tubeConfiguration>
+    <diameter>0.02</diameter>
+    <thetaDiv>10</thetaDiv>
+    <opacity>1.0</opacity>
+    <color>#94f2d3</color>
+  </tubeConfiguration>
+  <flightInformation>
+    <flightLength>5400</flightLength>
+    <totalFlightTime>15</totalFlightTime>
+  </flightInformation>
+</settings>
+```
+
+7. **Build and Run:**
 Build the solution and run the application to start the Airplane Simulation Trajectory experience.
 
 ## Usage
