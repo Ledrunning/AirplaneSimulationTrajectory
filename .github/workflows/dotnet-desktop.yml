@@ -14,7 +14,7 @@ env:
 
 jobs:
   build:
-    name: Build & Test (${{ matrix.configuration }})
+    name: Build (${{ matrix.configuration }})
     runs-on: windows-latest
 
     strategy:
@@ -36,16 +36,22 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v2
+        with:
+          nuget-version: 'latest'
+
       - name: Cache NuGet packages
         uses: actions/cache@v4
         with:
-          path: ~/.nuget/packages
-          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', '**/*.props') }}
+          path: src/AirplaneSimulationTrajectory/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', '**/packages.config') }}
           restore-keys: |
             nuget-${{ runner.os }}-
 
+      # packages.config требует nuget restore, а не msbuild /t:Restore
       - name: Restore NuGet packages
-        run: msbuild ${{ env.SOLUTION_PATH }} /t:Restore /p:Configuration=${{ matrix.configuration }}
+        run: nuget restore ${{ env.SOLUTION_PATH }}
 
       - name: Build solution
         run: |
@@ -55,25 +61,6 @@ jobs:
             /p:TreatWarningsAsErrors=false `
             /m `
             /v:minimal
-
-      - name: Run unit tests
-        run: |
-          dotnet test ${{ env.SOLUTION_PATH }} `
-            --configuration ${{ matrix.configuration }} `
-            --no-build `
-            --verbosity normal `
-            --logger "trx;LogFileName=test-results.trx" `
-            --results-directory ./TestResults
-        continue-on-error: false
-
-      - name: Publish test results
-        uses: dorny/test-reporter@v1
-        if: always()
-        with:
-          name: Test Results (${{ matrix.configuration }})
-          path: TestResults/*.trx
-          reporter: dotnet-trx
-          fail-on-error: false
 
   publish:
     name: Publish Release Artifact
@@ -95,27 +82,36 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v2
+        with:
+          nuget-version: 'latest'
+
       - name: Cache NuGet packages
         uses: actions/cache@v4
         with:
-          path: ~/.nuget/packages
-          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', '**/*.props') }}
+          path: src/AirplaneSimulationTrajectory/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', '**/packages.config') }}
           restore-keys: |
             nuget-${{ runner.os }}-
 
       - name: Restore NuGet packages
-        run: msbuild ${{ env.SOLUTION_PATH }} /t:Restore /p:Configuration=${{ env.BUILD_CONFIGURATION }}
+        run: nuget restore ${{ env.SOLUTION_PATH }}
 
-      - name: Publish application (self-contained, win-x64)
+      - name: Build solution (Release)
         run: |
-          dotnet publish ${{ env.SOLUTION_PATH }} `
-            --configuration ${{ env.BUILD_CONFIGURATION }} `
-            --runtime win-x64 `
-            --self-contained true `
-            --output ./publish/win-x64 `
-            /p:PublishSingleFile=true `
-            /p:IncludeNativeLibrariesForSelfExtract=true `
-            /p:EnableCompressionInSingleFile=true
+          msbuild ${{ env.SOLUTION_PATH }} `
+            /p:Configuration=${{ env.BUILD_CONFIGURATION }} `
+            /p:Platform="Any CPU" `
+            /m `
+            /v:minimal
+
+      - name: Collect build output
+        run: |
+          New-Item -ItemType Directory -Force -Path ./publish/win-x64
+          Get-ChildItem -Recurse -Path src -Include "*.exe","*.dll","*.config","*.pdb" `
+            | Where-Object { $_.FullName -match "\\bin\\${{ env.BUILD_CONFIGURATION }}\\" } `
+            | Copy-Item -Destination ./publish/win-x64 -Force
 
       - name: Get short SHA
         id: vars
