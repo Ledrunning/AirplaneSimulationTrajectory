@@ -1,0 +1,130 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+  workflow_dispatch:
+
+env:
+  SOLUTION_PATH: src/AirplaneSimulationTrajectory/AirplaneSimulationTrajectory.sln
+  DOTNET_VERSION: '8.0.x'
+  BUILD_CONFIGURATION: Release
+
+jobs:
+  build:
+    name: Build & Test (${{ matrix.configuration }})
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        configuration: [ Debug, Release ]
+      fail-fast: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET ${{ env.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', '**/*.props') }}
+          restore-keys: |
+            nuget-${{ runner.os }}-
+
+      - name: Restore NuGet packages
+        run: msbuild ${{ env.SOLUTION_PATH }} /t:Restore /p:Configuration=${{ matrix.configuration }}
+
+      - name: Build solution
+        run: |
+          msbuild ${{ env.SOLUTION_PATH }} `
+            /p:Configuration=${{ matrix.configuration }} `
+            /p:Platform="Any CPU" `
+            /p:TreatWarningsAsErrors=false `
+            /m `
+            /v:minimal
+
+      - name: Run unit tests
+        run: |
+          dotnet test ${{ env.SOLUTION_PATH }} `
+            --configuration ${{ matrix.configuration }} `
+            --no-build `
+            --verbosity normal `
+            --logger "trx;LogFileName=test-results.trx" `
+            --results-directory ./TestResults
+        continue-on-error: false
+
+      - name: Publish test results
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Test Results (${{ matrix.configuration }})
+          path: TestResults/*.trx
+          reporter: dotnet-trx
+          fail-on-error: false
+
+  publish:
+    name: Publish Release Artifact
+    runs-on: windows-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET ${{ env.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', '**/*.props') }}
+          restore-keys: |
+            nuget-${{ runner.os }}-
+
+      - name: Restore NuGet packages
+        run: msbuild ${{ env.SOLUTION_PATH }} /t:Restore /p:Configuration=${{ env.BUILD_CONFIGURATION }}
+
+      - name: Publish application (self-contained, win-x64)
+        run: |
+          dotnet publish ${{ env.SOLUTION_PATH }} `
+            --configuration ${{ env.BUILD_CONFIGURATION }} `
+            --runtime win-x64 `
+            --self-contained true `
+            --output ./publish/win-x64 `
+            /p:PublishSingleFile=true `
+            /p:IncludeNativeLibrariesForSelfExtract=true `
+            /p:EnableCompressionInSingleFile=true
+
+      - name: Get short SHA
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $env:GITHUB_OUTPUT
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AirplaneSimulationTrajectory-${{ steps.vars.outputs.sha_short }}
+          path: ./publish/win-x64/
+          retention-days: 30
+          if-no-files-found: error
